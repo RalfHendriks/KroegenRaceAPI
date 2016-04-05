@@ -4,27 +4,40 @@ var favicon = require('serve-favicon');
 var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var bcrypt   = require('bcrypt-nodejs');
 
 var express = require('express');
 var passport = require('passport');
 var flash    = require('connect-flash');
 var session  = require('express-session');
 var config = require('./config')();
+var ConnectRoles = require('connect-roles');
+var mongoose = require('mongoose');
 
-var router = express.Router();
-console.log(router);
-var mongoose = require('./data/db')(config.mlab.host);
+mongoose.connect(config.mlab.host);
 
-//Db.save();
+var user = new ConnectRoles({
+  failureHandler: function (req, res, action) {
+    // optional function to customise code that runs when
+    // user fails authorisation
+    var accept = req.headers.accept || '';
+    res.status(403);
+    if (~accept.indexOf('html')) {
+      res.render('access-denied', {action: action});
+    } else {
+      res.send('Access Denied - You don\'t have permission to: ' + action);
+    }
+  }
+});
 
-var routes = require('./routes/index')(router,passport);
+var routes = require('./routes/index')(passport);
+var races = require('./routes/race')(passport);
 var users = require('./routes/users');
 
-//var User = require('./models/user')();
-var Race = require('./models/race')(mongoose);
+require('./models/user')(mongoose,bcrypt);
+require('./models/race')(mongoose);
 
-require('./config/passport')(passport);
-
+require('./config/passport')(passport,mongoose.modelSchemas.User);
 /*User.findOne({ name: 'Ralf' }, function(err, thor) {
   /*if (err) return console.error(err);
   var Ralf = thor;
@@ -36,20 +49,6 @@ require('./config/passport')(passport);
         users: Ralf._id
     });
     console.log(KroegenRaceBudel);
-});*/
-
-
-/*var Ralf = new User({
-  name: 'Ralf',
-  local: {
-      email: 'Walfie@gmail.com',
-      password: 'Test123'
-  }, 
-});
-
-Ralf.save(function (err,Ralf) {
-  if (err) return console.error(err);
-  console.dir(Ralf);
 });*/
 
 var app = express();
@@ -67,10 +66,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({ secret: 'idreamofaworldwherenothingislimited' })); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
+app.use(user.middleware());
 app.use(flash());
 
 app.use('/', routes);
+app.use('/races',races);
 app.use('/users', users);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

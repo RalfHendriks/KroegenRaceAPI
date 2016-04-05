@@ -1,16 +1,14 @@
-var bcrypt   = require('bcrypt-nodejs');
-var mongoose = require('mongoose');
+function init(mongoose,bcrypt){
 
-module.exports = function(){
     var userSchema = new mongoose.Schema({
         name: String,
-        admin: Boolean,
+        role: String,
         age: Date,
         created_at: Date,
         updated_at: Date,
         local            : {
-            email        : { type: String, required: true, unique: true },
-            password     : { type: String, required: true },
+            email        : { type: String },
+            password     : { type: String },
         },
         facebook         : {
             id           : String,
@@ -25,7 +23,7 @@ module.exports = function(){
             name         : String
         }
     });
-    
+
     userSchema.methods.generateHash = function(password) {
         return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
     };
@@ -34,8 +32,13 @@ module.exports = function(){
     userSchema.pre('save', function(next) {
         var currentDate = new Date();
         this.updated_at = currentDate;
-            if (!this.created_at)
+            if (!this.created_at){
                 this.created_at = currentDate;
+                this.updated_at = currentDate;
+            }
+            else{
+                this.updated_at = currentDate;
+            }
         next();
     });
     
@@ -44,5 +47,7 @@ module.exports = function(){
         return bcrypt.compareSync(password, this.local.password);
     };
     
-    return mongoose.model('User', userSchema);
+    mongoose.model('User', userSchema);
 };
+
+module.exports = init;

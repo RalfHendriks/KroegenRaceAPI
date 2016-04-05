@@ -6,8 +6,8 @@ config.googleplaces = {
 };
 
 config.facebookAuth = {
-        'clientID'      : '600322860116047', // your App ID
-        'clientSecret'  : '080f432b8098bc46565de184bb16f934', // your App Secret
+        'clientID'      : '600322860116047',
+        'clientSecret'  : '080f432b8098bc46565de184bb16f934',
         'callbackURL'   : 'http://localhost:3000/auth/facebook/callback'
     },
 config.googleAuth = {
