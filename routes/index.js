@@ -1,49 +1,27 @@
 var express = require('express');
+var authorization = require('../config/authorization');
+var auth = new authorization();
 var router = express.Router();
 
 module.exports = function(passport) {
     
     /* GET home page. */
-    router.get('/', function(req, res,action) {
-        console.log(req.user);
-        if(!req.user){
-            res.render('index', { title: 'Express' });
-        }
-        else{
-            res.render('home', { title: 'Express' });
-        }
+    router.get('/', function(req, res) {
+        res.render('index', {userPermission: auth.validAction(req.user) });
     });
     
     // locally --------------------------------
-    router.get('/login', function(req, res,action) {
-        console.log(req.isAuthenticated());
-        console.log(req.user);
-        if(!req.user){
-            res.render('login', { message: req.flash('loginMessage') });
-        }
-        else{
-            res.redirect('/');
-        }
+    router.get('/login', function(req, res) {
+        res.render('login', { message: req.flash('loginMessage'), userPermission: auth.validAction(req.user) });
     });
     
-    router.get('/list', function(req, res) {
-        
-        console.log('pre');
-        console.log(req.user);
-        /*User.find({}, function(err, users) {
-            var userMap = {};
-            console.log('reached list');
-            users.forEach(function(user) {
-            userMap[user._id] = user;
-            });
-
-            res.render('listtest', { results: userMap });
-        });*/
-    }); 
+    router.get('/logout',function(req,res){
+       req.session.destroy();
+       res.redirect('/'); 
+    });
     
     router.get('/home', function(req, res) {
-        console.log(req.user.role);
-        res.render('home', { title: 'Express' });
+        res.render('home', { userPermission: auth.validAction(req.user) });
     });
     
     router.post('/login', passport.authenticate('local-login', {
@@ -53,7 +31,7 @@ module.exports = function(passport) {
 	}));
     
     router.get('/signup', function(req, res) {
-        res.render('signup', { message: req.flash('signupMessage') });
+        res.render('signup', { message: req.flash('signupMessage'), userPermission: auth.validAction(req.user) });
     });
 
     router.post('/signup', passport.authenticate('local-signup', {
@@ -86,9 +64,3 @@ module.exports = function(passport) {
     
     return router;
 };
-
-
-
-
-
-//module.exports = router;

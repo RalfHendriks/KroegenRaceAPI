@@ -1,47 +1,47 @@
 var express = require('express');
 var router = express.Router();
+var querystring = require('querystring');
+var Race;
 
-function testFunction(req,res){
-    console.log('first');
-    console.log(req.user);
-    if(req.user == 'admin')
-    {
-        res.render('race', { result: null});
-    }
-}
-
-function secondFunction(req,res){
-    console.log('second');
-    res.render('race', {result: null});
-}
-
-module.exports = function(passport) {
+router.route('/')
+    .get(loadMain)
+    .post(addRace);
     
-    router.get('/', function(req, res) {
-            console.log(req.isAuthenticated());
-            res.render('race', { result: passport});
-    });
-  
-    router.get('/:id', function(req, res) {
-            console.log(req.isAuthenticated());
-            res.render('race', { result: passport});
-    });
-  
-    router.post('/', function(req, res) {
-
-    });
+router.route('/:id')
+    .get()
+    .delete()
+    .put();
     
-    router.get('/id:/participants/', function(req, res) {
+router.route('/:id/participants')
+    .get()
+    .post();
 
-    });
+router.route('/:id/participants/:id')
+    .get()
+    .put()
+    .delete();
+ 
+module.exports = function(race) {
     
-    router.delete('/id:/participants/:id', function(req, res) {
+    Race = race;
+    return router;
 
-    });
-    
-    router.post('/addparticipant/:id', function(req, res) {
-
-    });
-  
-  return router;
 };
+
+function loadMain(req, res){
+    res.render('race', {});
+}
+
+function addRace(req, res){
+    var header = res.header();
+    var newRace = new Race(req.body);
+    newRace.save(function(err, savedRace){
+		if(err){
+            res.json(err);
+         }
+		else {
+			res.status(201);
+			res.json(newRace);
+		}
+	});
+}

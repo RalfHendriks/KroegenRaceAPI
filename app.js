@@ -30,14 +30,16 @@ var user = new ConnectRoles({
   }
 });
 
+var User = require('./models/user')(mongoose,bcrypt);
+var Race = require('./models/race')(mongoose);
+
 var routes = require('./routes/index')(passport);
-var races = require('./routes/race')(passport);
-var users = require('./routes/users');
+var races = require('./routes/race')(Race);
+var users = require('./routes/users')(User);
 
-require('./models/user')(mongoose,bcrypt);
-require('./models/race')(mongoose);
 
-require('./config/passport')(passport,mongoose.modelSchemas.User);
+
+require('./config/passport')(passport,User);
 /*User.findOne({ name: 'Ralf' }, function(err, thor) {
   /*if (err) return console.error(err);
   var Ralf = thor;
@@ -57,7 +59,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views/pages'));
 app.set('view engine', 'ejs');
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
