@@ -1,4 +1,4 @@
-function init(mongoose,bcrypt){
+module.exports = function(mongoose,bcrypt){
 
     var userSchema = new mongoose.Schema({
         name: String,
@@ -47,7 +47,6 @@ function init(mongoose,bcrypt){
         return bcrypt.compareSync(password, this.local.password);
     };
     
-    mongoose.model('User', userSchema);
+    return mongoose.model('User', userSchema);
 };
 
-module.exports = init;

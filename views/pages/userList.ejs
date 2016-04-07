@@ -12,17 +12,19 @@
                         <tr>
                             <th>#</th>
                             <th>Name</th>
+                            <th>Age</th>
                             <th>Created At</th>
+                            <th>Role</th>   
                         </tr>
                 </thead>
                 <tbody>
-                    <% for(var i=0; i < races.length; i++) { %>
+                    <% for(var i=0; i < users.length; i++) { %>
                         <tr>
-                            <th scope="row"><%= races[i]._id %></th>
-                            <td><%= races[i].name %></td>
-                            <td><%= races[i].age %></td>
-                            <td><%= races[i].created_at %></td>
-                            <td><%= races[i].role %></td>
+                            <th scope="row"><%= users[i]._id %></th>
+                            <td><%= users[i].name %></td>
+                            <td><%= users[i].age %></td>
+                            <td><%= users[i].created_at %></td>
+                            <td><%= users[i].role %></td>
                         </tr>
                     <% } %>
                 </tbody>
@@ -35,3 +37,4 @@
     </footer>
 </body>
 </html>
+
