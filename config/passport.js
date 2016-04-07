@@ -2,12 +2,13 @@ var LocalStrategy   = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
 var GoogleStrategy   = require('passport-google-oauth').OAuth2Strategy;
 
-var User = require('../models/user')();
+var User = null;
 
 var configAuth = require('./index')();
 
-module.exports = function(passport) {
-
+module.exports = function(passport,user) {
+    
+    this.User = user;
     // used to serialize the user for the session
     passport.serializeUser(function(user, done) {
         done(null, user.id);
@@ -58,8 +59,8 @@ module.exports = function(passport) {
                 newUser.name     = req.body.name;
                 newUser.age      = req.body.age; 
                 newUser.local.email    = email;
-                newUser.local.password = newUser.generateHash(password); // use the generateHash function in our user model
-                console.log(newUser);
+                newUser.local.password = newUser.generateHash(password);// use the generateHash function in our user model
+                newUser.role = 'user'; 
 				// save the user
                 newUser.save(function(err) {
                     if (err)
@@ -79,7 +80,7 @@ module.exports = function(passport) {
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
     function(req, email, password, done) { // callback with email and password from our form
-
+        console.log(req.user);
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
         User.findOne({ 'local.email' :  email }, function(err, user) {
@@ -109,21 +110,21 @@ module.exports = function(passport) {
         clientID        : configAuth.facebookAuth.clientID,
         clientSecret    : configAuth.facebookAuth.clientSecret,
         callbackURL     : configAuth.facebookAuth.callbackURL,
+        profileFields: ['id','name', 'emails'],
         passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
 
     },
     function(req, token, refreshToken, profile, done) {
 
         // asynchronous
-        process.nextTick(function() {
-
+        process.nextTick(function() {  
             // check if the user is already logged in
             if (!req.user) {
 
                 User.findOne({ 'facebook.id' : profile.id }, function(err, user) {
                     if (err)
                         return done(err);
-                   console.log(profile);         
+              
                     if (user) {
                         
                         // if there is a user id already but no token (user was linked at one point and then removed)
@@ -143,12 +144,14 @@ module.exports = function(passport) {
                     } else {
                         // if there is no user, create them
                         var newUser            = new User();
-
+                        var name = profile.name.givenName + ' ' + profile.name.familyName;
+                        newUser.name = name;
                         newUser.facebook.id    = profile.id;
                         newUser.facebook.token = token;
-                        newUser.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName;
+                        newUser.facebook.name  = name;
                         newUser.facebook.email = profile.emails[0].value;
-
+                        newUser.created_at = new Date();
+                        newUser.admin = false;
                         newUser.save(function(err) {
                             if (err)
                                 throw err;
