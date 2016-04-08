@@ -1,8 +1,17 @@
 module.exports = function(mongoose,bcrypt){
 
     var userSchema = new mongoose.Schema({
-        name: String,
-        role: String,
+        name: {
+            type: String,
+            required: true,
+            min: 2,
+            max: 20
+        },
+        role: {
+            type: String,
+            required: true,
+            enum: ['admin', 'user']
+        },
         age: Date,
         created_at: Date,
         updated_at: Date,
