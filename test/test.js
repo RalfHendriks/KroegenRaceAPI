@@ -12,7 +12,7 @@ var User = require('../models/user')(mongoose,bcrypt);
 var Race = require('../models/race')(mongoose);
 
 var routes = require('../routes/index')(passport);
-var races = require('../routes/race')(Race);
+var races = require('../routes/races')(Race);
 var users = require('../routes/users')(User);
 
 app.use('/', routes);
@@ -28,11 +28,23 @@ describe('Routing', function() {
         done();
     });
 
-    describe('GET /race', function() {
+    describe('GET /races', function() {
         it('respond with json', function(done) {
             request(app)
-                .get('/race')
+                .get('/races/5707098141ee13db4bdb53ae')
                 .set('Accept', 'application/json')
+                .expect(200)
+                .end(function(err, res) {
+                    if (err) {
+                        throw err;
+                    }
+                    done();
+                });
+        });
+        it('respond with json', function(done) {
+            request(app)
+                .get('/races/hello')
+                .set('Accept', 'application/html')
                 .expect(200)
                 .end(function(err, res) {
                     if (err) {

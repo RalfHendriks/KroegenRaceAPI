@@ -14,7 +14,7 @@ router.route('/')
     .post(addRace);
     
 router.route('/:id')
-    .get()
+    .get(getRace)
     .delete()
     .put();
     
@@ -54,8 +54,20 @@ function getRaces(req, res){
         });
     }
     else{
-        res.render('404');  
+        res.json('Wrong id');  
     }
+}
+
+function getRace(req,res){
+    var query = getRequestId(req);
+    Race.findOne(query,function (err,race) {
+        if(race != null){
+            res.json(race);
+        }
+        else{
+              res.json('Wrong id');  
+        } 
+    });
 }
 
 function getBar(name,callback){
