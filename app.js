@@ -14,14 +14,6 @@ var config = require('./config')();
 var ConnectRoles = require('connect-roles');
 var mongoose = require('mongoose');
 
-// Logger
-winston.add(winston.transports.File, {
-  filename: config.logger.api
-});
-winston.handleExceptions(new winston.transports.File({
-  filename: config.logger.exception
-}));
-
 // Mongoose
 mongoose.connect(config.mlab.host);
 
@@ -40,8 +32,9 @@ var user = new ConnectRoles({
 });
 
 var User = require('./models/user')(mongoose,bcrypt);
-var Race = require('./models/race')(mongoose);
 var Bar  = require('./models/bar')(mongoose);
+var Race = require('./models/race')(mongoose);
+
 
 var routes = require('./routes/index')(passport);
 var races = require('./routes/races')(Race,User,Bar);
