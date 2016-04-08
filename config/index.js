@@ -1,6 +1,6 @@
 module.exports = function(){
     var env = {};
-    switch (process.env.NODE_ENV || 'development') {
+    switch ('development') {
     case 'development':
         env = require('./development');
         break;
