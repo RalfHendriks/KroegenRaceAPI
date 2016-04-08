@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var authorization = require('../config/authorization');
 var auth = new authorization();
-var User = null;
+var User;
 
 
 module.exports = function(user) {
