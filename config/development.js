@@ -28,3 +28,8 @@ config.mlab = {
 
   }
 };
+
+config.logger = {
+    "api": "logs/api.log",
+    "exception": "logs/exceptions.log"
+};

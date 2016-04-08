@@ -14,6 +14,15 @@ var config = require('./config')();
 var ConnectRoles = require('connect-roles');
 var mongoose = require('mongoose');
 
+// Logger
+winston.add(winston.transports.File, {
+  filename: config.logger.api
+});
+winston.handleExceptions(new winston.transports.File({
+  filename: config.logger.exception
+}));
+
+// Mongoose
 mongoose.connect(config.mlab.host);
 
 var user = new ConnectRoles({
