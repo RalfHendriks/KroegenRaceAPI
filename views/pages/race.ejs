@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <% include ../partials/head %>
@@ -18,13 +19,14 @@
                         </tr>
                 </thead>
                 <tbody>
-                    <% for(var i=0; i < races.length; i++) { %>
+                    <% for(var i=0; i < data.length; i++) { %>
                         <tr>
-                            <th scope="row"><%= races[i]._id %></th>
-                            <td><%= races[i].name %></td>
-                            <td><%= races[i].created_at %></td>
-                            <td><%= races[i].users.lenght %></td>
-                            <td><%= races[i].bars.lenght %></td>
+                            <th scope="row"><%= data[i]._id %></th>
+                            <td><%= data[i].name %></td>
+                            <td><%= data[i].created_at %></td>
+                            <td><%= data[i].users.lenght %></td>
+                            <td><%= data[i].bars.lenght %></td>
+                            <td><a href="/races/<%= data[i]._id %>" class="btn btn-default"><span class="fa fa-user"></span>details</a></td>
                         </tr>
                     <% } %>
                 </tbody>

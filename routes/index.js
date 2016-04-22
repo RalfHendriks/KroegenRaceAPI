@@ -12,6 +12,7 @@ module.exports = function(passport) {
     
     // locally --------------------------------
     router.get('/login', function(req, res) {
+        console.log(req.get('Content-Type'));
         res.render('login', { message: req.flash('loginMessage'), userPermission: auth.validAction(req.user) });
     });
     

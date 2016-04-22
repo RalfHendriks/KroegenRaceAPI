@@ -7,6 +7,7 @@ var Bar;
 
 module.exports = function(bar) {
     Bar = bar;
+    var c = 0;
     return router;
 };
 

@@ -41,31 +41,45 @@ module.exports = function(race,user,bar) {
     return router;
 };
 
-function getRaces(req, res){
-    var permission = auth.validAction(req.user);
-    if(permission == '1'){
-        Race.find({}, function(err, races) {
-            var raceMap = [];
-            races.forEach(function(race) {
-                raceMap.push(race);
-            });
-            console.log(raceMap);
-            res.render('race', {races: raceMap,userPermission: permission });  
-        });
-    }
-    else{
-        res.json('Wrong id');  
+function renderPage(type, data,target,permission,res){
+    switch(type){
+         case 'application/json':
+                res.json(data);
+            break;
+        case 'text/html':
+                if(permission == '1'){
+                    console.log(data);
+                    res.render(target, {data: data,userPermission: permission });  
+                }
+                else{
+                    res.json('Permission denied!');
+                }
+            break;
+        default:
+                res.send({ error: 'No header found' });
+            break;
     }
 }
+    
+function getRaces(req, res){
+    Race.find({}, function(err, races) {
+        var raceMap = [];
+        races.forEach(function(race) {
+            raceMap.push(race);
+        });
+        renderPage(req.accepts('text/html', 'application/json'),raceMap,'race',auth.validAction(req.user),res);
+    });
+}
+
 
 function getRace(req,res){
     var query = getRequestId(req);
     Race.findOne(query,function (err,race) {
         if(race != null){
-            res.json(race);
+            renderPage(req.accepts('text/html', 'application/json'),race,'racedetails',auth.validAction(req.user),res);
         }
         else{
-              res.json('Wrong id');  
+              res.json('Invalid Race id');  
         } 
     });
 }

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+</head>
+<body class="container">
+    <header>
+        <% include ../partials/header %>
+    </header>
+        <div class="col-sm-6 col-sm-offset-3">
+            <div class="row">
+                <table>
+                    <tr>
+                        <td width="200px"><label>ID</label></td>
+                        <td width="500px"> <input type="text" class="form-control" name="id" value=<%-JSON.stringify(data._id) %>></td>
+                    </tr>
+                    <tr>
+                        <td width="200px"><label>Created At</label></td>
+                        <td width="500px"> <input type="text" class="form-control" name="created_at" value=<%-JSON.stringify(data.created_at) %>></td>
+                    </tr>
+                    <tr>
+                        <td width="200px"><label>Updated At</label></td>
+                        <td width="500px"> <input type="text" class="form-control" name="updated_at" value=<%-JSON.stringify(data.updated_at) %>></td>
+                    </tr>
+                    <tr>
+                        <td width="200px"><label>Name</label></td>
+                        <td width="500px"><input type="text" class="form-control" name="name" value=<%-JSON.stringify(data.name) %>></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+</body>
+</html>
