@@ -11,22 +11,21 @@
             <table class="table table-hover">
                 <thead>
                         <tr>
-                            <th>#</th>
                             <th>Name</th>
                             <th>Created At</th>
                             <th>Participants</th>
                             <th>Bars</th>
+                            <th><input type="button" class="btn btn-success" value="Aanmaken" onclick="location.href='/postcodebeheer/create'" /></th>
                         </tr>
                 </thead>
                 <tbody>
                     <% for(var i=0; i < data.length; i++) { %>
                         <tr>
-                            <th scope="row"><%= data[i]._id %></th>
-                            <td><%= data[i].name %></td>
-                            <td><%= data[i].created_at %></td>
+                            <td scope="row"><%= data[i].name %></td>
+                            <td><%= data[i].created_at.toISOString().replace(/T/, ' ').replace(/\..+/, '') %></td>
                             <td><%= data[i].users.lenght %></td>
                             <td><%= data[i].bars.lenght %></td>
-                            <td><a href="/races/<%= data[i]._id %>" class="btn btn-default"><span class="fa fa-user"></span>details</a></td>
+                            <td><a href="/races/<%= data[i]._id %>" class="btn btn-warning"><span class="fa fa-user"></span>details</a></td>
                         </tr>
                     <% } %>
                 </tbody>

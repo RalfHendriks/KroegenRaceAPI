@@ -60,7 +60,6 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(user.middleware());
 app.use(flash());
-
 app.use('/', routes);
 app.use('/races', races);
 app.use('/users', users);

@@ -9,19 +9,23 @@
 
         <ul class="nav navbar-nav">
             <li><a href="/">Home</a></li>
-            <li><a href="/docs">Docs</a></li>
+             <%if(userPermission == '0'){%>
+                <li><a href="/docs">Docs</a></li>
+             <%}%>
+
             <%if(userPermission == '1'){%>
                 <li><a href="/users">Users</a></li>
                 <li><a href="/races">Pub races</a></li>
                 <li><a href="/places">Google places</a></li>
             <%}%>
             <%if(userPermission == '2'){%>
+                <li><a href="/races">Pub races</a></li>
                 <li><a href="/account">Account</a></li>
             <%}%>
         </ul>
         
         <ul class="nav navbar-nav navbar-right">
-            <% if(userPermission == '1' || userPermission == '2') {%>
+            <% if(userPermission != '0') {%>
                 <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
             <% } else { %>
                 <li><a href="/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
