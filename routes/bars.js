@@ -34,8 +34,4 @@ function getBars(req, res){
     
 }
 
-//https://maps.googleapis.com/maps/api/geocode/json?latlng=51.436884,5.480369&key=AIzaSyD3PUPRq9aJRVeCXaIJo2_FDb6mEAxTSWE
-
-
-
-
+//https://maps.googleapis.com/maps/api/geocode/json?latlng=51.436884,5.480369&result_type=street_address&key=AIzaSyD3PUPRq9aJRVeCXaIJo2_FDb6mEAxTSWE
