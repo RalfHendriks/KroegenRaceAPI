@@ -48,7 +48,6 @@ function renderPage(type, data,target,permission,res){
             break;
         case 'text/html':
                 if(permission == '1'){
-                    console.log(data);
                     res.render(target, {data: data,userPermission: permission });  
                 }
                 else{
@@ -62,20 +61,53 @@ function renderPage(type, data,target,permission,res){
 }
     
 function getRaces(req, res){
-    Race.find({}, function(err, races) {
-        var raceMap = [];
-        races.forEach(function(race) {
-            raceMap.push(race);
+    console.log(req.user);
+    var permissionLevel = auth.validAction(req.user);
+    var query = {};
+    switch(permissionLevel){
+        case '1':
+            query = {}
+            break;
+        case '2':
+            query = {'raceLeader': req.user._id};
+            break;
+    }
+        async.waterfall([
+            function(callback) {
+                Race.find(query).sort('-date').exec(function(err, races) {
+                    callback(null, races);
+                  });
+            },
+            function(races, callback) {
+                /*races.forEach(function())
+                                    race.bars.forEach(function(barID){
+                        console.log(barID);
+                            Bar.find({'_id': barID}, function(err,bar){
+                                console.log(bar);
+                                console.log(err);
+                                bars.push(bar);
+                            }); 
+                    });*/
+            // arg1 now equals 'one' and arg2 now equals 'two'
+                callback(null, 'three');
+            },
+            function(arg1, callback) {
+                // arg1 now equals 'three'
+                callback(null, 'done');
+            }
+        ], function (err, result) {
+            // result now equals 'done'
         });
-        renderPage(req.accepts('text/html', 'application/json'),raceMap,'race',auth.validAction(req.user),res);
-    });
-}
 
+        console.log(raceMap);
+        renderPage(req.accepts('text/html', 'application/json'),raceMap,'race',auth.validAction(req.user),res);
+}
 
 function getRace(req,res){
     var query = getRequestId(req);
     Race.findOne(query,function (err,race) {
         if(race != null){
+                                console.log(race);
             renderPage(req.accepts('text/html', 'application/json'),race,'racedetails',auth.validAction(req.user),res);
         }
         else{
@@ -84,46 +116,77 @@ function getRace(req,res){
     });
 }
 
-function getBar(name,callback){
-    var selectedBar;
-    Bar.findOne({'name' : name} ,function (err,bar) {
-        if(bar == null){
-        newBar.save(function(err,newSavedBar){
-            selectedBar = newSavedBar;
-            });
-        }
-        else
-        {
-            selectedBar = bar;
-        }
-        callback({selectedBar});
-    });
-}
+function addRace(req, res){
+    var newRace = new Race(req.body);
+    async.waterfall([
+        function(callback) {
+            var startDate = new Date(); 
+            var options = {
+                host: 'maps.googleapis.com',
+                path: '/maps/api/place/nearbysearch/json?key=AIzaSyD3PUPRq9aJRVeCXaIJo2_FDb6mEAxTSWE&location='+req.body.lat+','+req.body.lng+'&radius=2000&type=bar|cafe'
+            };
+            https.get(options, function (response) {
+                var content = '';
+                response.on('data', function (chunk) {
+                    content += chunk;
+                });
 
-function getBarPLaces(newRace,callback){
-        getPlaces('51.274651', '5.575767', function(bars){
-            bars.object.results.forEach(function(googlePlacesBar) {
-                var newBar = new Bar();
-                newBar.location.lat = googlePlacesBar.geometry.location.lat;
-                newBar.location.long = googlePlacesBar.geometry.location.lng;
-                newBar.name = googlePlacesBar.name;
-                getBar(newBar.name,function(result){
-                    newRace.bars.push(result);
-                    newRace.save();
+                response.on('end', function () {
+                    var bars = [];
+                    JSON.parse(content).results.forEach(function(googlePlacesBar) {
+                        var newBar = new Bar();
+                        newBar.location.lat = googlePlacesBar.geometry.location.lat;
+                        newBar.location.long = googlePlacesBar.geometry.location.lng;
+                        var address = googlePlacesBar.vicinity.split(",");
+                        newBar.location.address.street = address[(address.length -2)];
+                        newBar.location.address.city = address[(address.length -1)];
+                        newBar.name = googlePlacesBar.name;
+                        newBar.available = true;
+                        bars.push(newBar);
+                    });
+                    callback(null,
+                        bars
+                    );
                 });
             });
-            callback({newRace});
-    });
-}
+        },
+        function(bars, callback) {
+            bars.forEach(function(selectedBar){
+                console.log(selectedBar);
+                Bar.findOne({'name' : selectedBar.name,'lat': selectedBar.lat,'long': selectedBar.long} ,function (err,bar) {
+                    if(bar == null){
+                    selectedBar.save(function(err,newbar){
+                            selectedBar = newbar;
+                            console.log(err);
+                        });
+                    }
+                    else
+                    {
+                        selectedBar = bar;
+                    }
+                });
+            });
+            callback(null, bars);
+        },
+        function(barlist, callback) {
+            barlist.forEach(function(bar){
+                newRace.bars.push({'bar':bar,'visited':false});
+            })
+            newRace.save(function(err){
+               console.log(err); 
+            });
+            callback(null);
+        }
+        ], 
+        function (err) {
+            if(err == null){
+                res.json(newRace); 
+            }
+            else{
+                console.log(err);
+            }
 
-function addRace(req, res){
-    
-    var newRace = new Race(req.body);
-        getBarPLaces(newRace,function(barResults){
-            newRace = barResults;
-            
-            res.json(newRace);   
-        });
+    });
 }
 
 function addUser(req,res){
@@ -196,30 +259,5 @@ function getRequestId(req){
         q._id = req.params.id;
     }
     return q;
-}
-
-function getPlaces(lat, long, callback){
-    var startDate = new Date(); 
-    var options = {
-        host: 'maps.googleapis.com',
-        path: '/maps/api/place/nearbysearch/json?key=AIzaSyCa7_xDOrAkBwMIgCYe3zet8dNZYjLbgII&location='+lat+','+long+'&radius=5000&type=bar|cafe'
-    };
-
-    https.get(options, function (response) {
-        var content = '';
-
-        // Elke keer als we wat data terugkrijgen zullen we dit bij de content toevoegen.
-        response.on('data', function (chunk) {
-            content += chunk;
-        });
-
-        // Als het hele response terug is kunnen we verder
-        response.on('end', function () {
-            var object = JSON.parse(content);
-            callback({
-                object
-            });
-        });
-    });
 }
 

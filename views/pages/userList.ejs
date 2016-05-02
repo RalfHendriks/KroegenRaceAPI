@@ -12,9 +12,10 @@
                         <tr>
                             <th>#</th>
                             <th>Name</th>
-                            <th>Age</th>
+                            <th>Birthday</th>
                             <th>Created At</th>
-                            <th>Role</th>   
+                            <th>Role</th>
+                            <th><input type="button" class="btn btn-success" value="Add user" onclick="location.href='/users/create'" /></th>   
                         </tr>
                 </thead>
                 <tbody>
@@ -22,9 +23,10 @@
                         <tr>
                             <th scope="row"><%= users[i]._id %></th>
                             <td><%= users[i].name %></td>
-                            <td><%= users[i].age %></td>
-                            <td><%= users[i].created_at %></td>
+                            <td><%= users[i].age.toISOString().replace(/T/, ' ').replace(/\..+/, '') %></td>
+                            <td><%= users[i].created_at.toISOString().replace(/T/, ' ').replace(/\..+/, '') %></td>
                             <td><%= users[i].role %></td>
+                            <td><a href="/users/<%= users[i]._id %>" class="btn btn-warning" ><span class="fa fa-user"></span>details</a></td>
                         </tr>
                     <% } %>
                 </tbody>
