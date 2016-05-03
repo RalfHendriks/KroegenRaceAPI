@@ -23,8 +23,8 @@
                         <tr>
                             <td scope="row"><%= data[i].name %></td>
                             <td><%= data[i].created_at.toISOString().replace(/T/, ' ').replace(/\..+/, '') %></td>
-                            <td><%= data[i].users.lenght %></td>
-                            <td><%= data[i].bars.lenght %></td>
+                            <td><%= data[i].participants.length %></td>
+                            <td><%= data[i].bars.length %></td>
                             <td><a href="/races/<%= data[i]._id %>" class="btn btn-warning"><span class="fa fa-user"></span>details</a></td>
                         </tr>
                     <% } %>

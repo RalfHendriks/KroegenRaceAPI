@@ -1,16 +1,15 @@
 var express = require('express');
-var router = express.Router();
-var authorization = require('../config/authorization');
-var auth = new authorization();
+var router = express.Router({mergeParams: true});
 var Bar;
 
 router.route('/')
-    .get(getBars);
+    .get(getBars)
+    .put(addBar);
     
 router.route('/:id')
-    .get()
-    .delete()
-    .put();
+    .get(getBar)
+    .delete(removeBar)
+    .put(updateBar);
 
 
 
@@ -20,18 +19,22 @@ module.exports = function(bar) {
 };
 
 function getBars(req, res){
-    var permissionLevel = auth.validAction(req.user);
-    var query = {};
-    switch(permissionLevel){
-        case '1':
-            query = {}
-            break;
-        case '2':
-            query = {'raceLeader': req.user._id};
-            break;
-    }
-    
+    res.json('Succes!');
+}
+
+function getBar(req, res){
     
 }
 
+function addBar(req, res){
+    
+}
+
+function removeBar(req, res){
+    
+}
+
+function updateBar(req, res){
+    
+}
 //https://maps.googleapis.com/maps/api/geocode/json?latlng=51.436884,5.480369&result_type=street_address&key=AIzaSyD3PUPRq9aJRVeCXaIJo2_FDb6mEAxTSWE

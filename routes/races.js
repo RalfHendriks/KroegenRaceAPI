@@ -19,7 +19,7 @@ router.route('/:id')
     .put();
     
 router.route('/:id/participants')
-    .get()
+    .get(getUsers)
     .put(addUser);
 
 router.route('/:id/participants/:userid')
@@ -41,6 +41,17 @@ module.exports = function(race,user,bar) {
     return router;
 };
 
+function getHeaderType(req){
+    var headerType = req.get('Content-Type');
+    if(headerType == undefined){
+        headerType = req.accepts('text/html');
+    }
+    else if(headerType.indexOf(',') != -1){
+        headerType = headerType.split(",")[0];
+    }
+    return headerType;    
+}
+
 function renderPage(type, data,target,permission,res){
     switch(type){
          case 'application/json':
@@ -48,6 +59,7 @@ function renderPage(type, data,target,permission,res){
             break;
         case 'text/html':
                 if(permission == '1'){
+                        console.log(data);
                     res.render(target, {data: data,userPermission: permission });  
                 }
                 else{
@@ -71,300 +83,32 @@ function getRaces(req, res){
             query = {'raceLeader': req.user._id};
             break;
     }
-        /*async.waterfall([
+        async.waterfall([
             function(callback) {
                 Race.find(query).sort('-date').exec(function(err, races) {
                     callback(null, races);
                   });
             },
             function(races, callback) {
-            var bars = [];
-            async.each(races, function(race, callback){
-                async.each(race.bars, function(object, callback){
-                    Bar.find({'_id': object.bar}, function(err,bar){
-                        if(bar[0] != 'undefined'){
-                            bars.push({'bar':bar,'visited': false});
-                        }
-                        callback();
-                    });  
-                },
-                   function(err){
-                     console.log(bars);
-                    }
-                );
-                callback();
-            },
-            // 3rd param is the function to call when everything's done
-                function(err){
-                    callback(null, bars);
-                }
-            );
-
-                /*races.forEach(function(race){
-                    race.bars.forEach(function(object){
-                       Bar.find({'_id': object.bar}, function(err,bar){
-                                if(bar[0] != 'undefined'){
-                                    bars.push({'bar':bar,'visited': false});
-                                }
-                       });  
-                    });
-                });
-                callback(null, bars);
-            },
-            function(arg1, callback) {
-                callback(null, 'done');
+            async.forEach(races, function (race, callback1) {
+                var count = 0;
+                async.forEach(race.bars, function (currItem, callback2) {
+                        Bar.find({'_id': currItem.bar}, function(err,bar){
+                            if(bar[count] != 'undefined'){
+                                race.bars[count] = {'bar':bar,'visited': false};
+                            }
+                            count = count +1;
+                            callback2(err);
+                        });  
+                }, callback1);
+            }, function (err) {
+                callback(null, races);
+            });
             }
         ], function (err, result) {
-            // result now equals 'done'
-        });*/
-        var c = {
-    "_id": {
-        "$oid": "5727626940262c24107885a3"
-    },
-    "created_at": {
-        "$date": "2016-05-02T14:21:29.658Z"
-    },
-    "updated_at": {
-        "$date": "2016-05-02T14:21:29.658Z"
-    },
-    "name": "Race budel 1",
-    "raceLeader": {
-        "$oid": "5702c4981adb13154894face"
-    },
-    "bars": [
-        {
-            "bar": {
-                "_id": {
-        "$oid": "572761e3935a6fe80a765193"
-    },
-    "available": true,
-    "name": "zuiderpoortCafé",
-    "ratings": [],
-    "location": {
-        "long": 5.5692172,
-        "lat": 51.2609826,
-        "address": {
-            "city": " Budel",
-            "street": "Sportlaan 7"
-        }
-    }
-            },
-            "visited": false
-        },
-        {
-            "bar": {
-                 "_id": {
-        "$oid": "572761e3935a6fe80a765194"
-    },
-    "available": true,
-    "name": "Discotheek The Energy",
-    "ratings": [],
-    "location": {
-        "long": 5.576710399999999,
-        "lat": 51.2745177,
-        "address": {
-            "city": " Budel",
-            "street": "Deken van Baarsstraat 3"
-        }
-    }
-            },
-            "visited": false
-        },
-        {
-            "bar": {
-                "_id": {
-        "$oid": "572761e3935a6fe80a765195"
-    },
-    "available": true,
-    "name": "Café Zaal De Bellevue",
-    "ratings": [],
-    "location": {
-        "long": 5.581622299999998,
-        "lat": 51.2778522,
-        "address": {
-            "city": " Budel",
-            "street": "Maarheezerweg 1"
-        }
-    }
-            },
-            "visited": false
-        },
-        {
-            "bar": {
-                "_id": {
-        "$oid": "572761e3935a6fe80a765196"
-    },
-    "available": true,
-    "name": "De Bonte Os - eetcafé & zaal",
-    "ratings": [],
-    "location": {
-        "long": 5.576281900000001,
-        "lat": 51.2746131,
-        "address": {
-            "city": " Budel",
-            "street": "Doctor Ant. Mathijsenstraat 12"
-        }
-    }
-            },
-            "visited": false
-        },
-        {
-            "bar": {
-                  "_id": {
-        "$oid": "572761e3935a6fe80a765197"
-    },
-    "available": true,
-    "name": "Kès & zo",
-    "ratings": [],
-    "location": {
-        "long": 5.575871599999999,
-        "lat": 51.2738556,
-        "address": {
-            "city": " Budel",
-            "street": "Capucijnerplein 15"
-        }
-    }
-            },
-            "visited": false
-        },
-        {
-            "bar": {
-                 "_id": {
-        "$oid": "572761e3935a6fe80a765198"
-    },
-    "available": true,
-    "name": "Cambrinus Bar",
-    "ratings": [],
-    "location": {
-        "long": 5.575727199999999,
-        "lat": 51.2740201,
-        "address": {
-            "city": "Budel"
-        }
-    }
-            },
-            "visited": false
-        },
-        {
-            "bar": {
-                 "_id": {
-        "$oid": "572761e3935a6fe80a765199"
-    },
-    "available": true,
-    "name": "Café Quincy",
-    "ratings": [],
-    "location": {
-        "long": 5.574822,
-        "lat": 51.27478439999999,
-        "address": {
-            "city": " Budel",
-            "street": "Markt 25"
-        }
-    }
-            },
-            "visited": false
-        },
-        {
-            "bar": {
-                "_id": {
-        "$oid": "572761e3935a6fe80a76519a"
-    },
-    "available": true,
-    "name": "Café 't Huukske",
-    "ratings": [],
-    "location": {
-        "long": 5.5720964,
-        "lat": 51.27384209999999,
-        "address": {
-            "city": " Budel",
-            "street": "Molenstraat 1"
-        }
-    }
-            },
-            "visited": false
-        },
-        {
-            "bar": {
-                 "_id": {
-        "$oid": "572761e3935a6fe80a76519b"
-    },
-    "available": true,
-    "name": "De Bierparel",
-    "ratings": [],
-    "location": {
-        "long": 5.5767471,
-        "lat": 51.2743325,
-        "address": {
-            "city": " Budel",
-            "street": "Deken van Baarsstraat 5"
-        }
-    }
-            },
-            "visited": false
-        },
-        {
-            "bar": {
-                "_id": {
-        "$oid": "572761e3935a6fe80a76519c"
-    },
-    "available": true,
-    "name": "Proost",
-    "ratings": [],
-    "location": {
-        "long": 5.5763934,
-        "lat": 51.274458,
-        "address": {
-            "city": " Budel",
-            "street": " Deken van Baarsstraat 1"
-        }
-    }
-            },
-            "visited": false
-        },
-        {
-            "bar": {
-                "_id": {
-        "$oid": "572761e3935a6fe80a76519d"
-    },
-    "available": true,
-    "name": "Helmi's Kafee",
-    "ratings": [],
-    "location": {
-        "long": 5.5750887,
-        "lat": 51.2739956,
-        "address": {
-            "city": " Budel",
-            "street": "Capucijnerplein 10"
-        }
-    }
-            },
-            "visited": false
-        },
-        {
-            "bar": {
-                 "_id": {
-        "$oid": "572761e3935a6fe80a76519e"
-    },
-    "available": true,
-    "name": "City Bar",
-    "ratings": [],
-    "location": {
-        "long": 5.574284899999999,
-        "lat": 51.27456639999999,
-        "address": {
-            "city": " Budel",
-            "street": "Markt 19"
-        }
-    }
-            },
-            "visited": false
-        }
-    ],
-    "participants": [],
-    "__v": 0
-};
-        res.json(c);
-        //renderPage(req.accepts('text/html', 'application/json'),raceMap,'race',auth.validAction(req.user),res);
+            renderPage(getHeaderType(req),result,'race',auth.validAction(req.user),res);
+        });
+        
 }
 
 function getRace(req,res){
@@ -384,15 +128,17 @@ function addRace(req, res){
     var newRace = new Race(req.body);
     async.waterfall([
         function(callback) {
-            var startDate = new Date(); 
+            var startDate = new Date();                        
             var options = {
                 host: 'maps.googleapis.com',
                 path: '/maps/api/place/nearbysearch/json?key=AIzaSyD3PUPRq9aJRVeCXaIJo2_FDb6mEAxTSWE&location='+req.body.lat+','+req.body.lng+'&radius=2000&type=bar|cafe'
             };
             https.get(options, function (response) {
                 var content = '';
+                                                    
                 response.on('data', function (chunk) {
                     content += chunk;
+                    console.log('reached!');
                 });
 
                 response.on('end', function () {
@@ -412,6 +158,9 @@ function addRace(req, res){
                         bars
                     );
                 });
+               response.on('error', function(err){
+                  console.log('duh'); 
+               }); 
             });
         },
         function(bars, callback) {
@@ -453,10 +202,20 @@ function addRace(req, res){
     });
 }
 
-function addUser(req,res){
-    var query = getRequestId(req);
-    Race.findOne(query,function (err,race) {
-        race.users.push(req.body._id);
+function getUsers(req,res){
+    
+}
+
+function Add(query,type,id){
+     Race.findOne(query,function (err,race) {
+         switch(type){
+             case 'user':
+                race.users.push(id);
+                break;
+             case 'bar':
+                race.bars.push(id);
+                break;
+         }
         race.save(function(err) {
             if (err)
                 res.json(err);
@@ -466,17 +225,12 @@ function addUser(req,res){
     });
 }
 
+function addUser(req,res){
+    Add(getRequestId(req),'user',req.body._id);
+}
+
 function addBar(req,res){
-    var query = getRequestId(req);
-    Race.findOne(query,function (err,race) {
-        race.bars.push(req.body._id);
-        race.save(function(err) {
-            if (err)
-                res.json(err);
-            else
-                res.json(race);
-        });
-    });
+    Add(getRequestId(req),'bar',req.body._id);
 }
 
 function removeUser(req,res){

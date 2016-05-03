@@ -37,9 +37,10 @@ var Race = require('./models/race')(mongoose);
 
 
 var routes = require('./routes/index')(passport);
+var bars = require('./routes/bars')(Bar);
 var races = require('./routes/races')(Race,User,Bar);
 var users = require('./routes/users')(User);
-var bars = require('./routes/bars')(Bar);
+
 
 require('./config/passport')(passport,User);
 
