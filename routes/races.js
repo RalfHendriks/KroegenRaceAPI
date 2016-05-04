@@ -8,6 +8,7 @@ var auth = new authorization();
 var Race;
 var User;
 var Bar;
+var userCtrl;
 
 router.route('/')
     .get(getRaces)
@@ -19,12 +20,12 @@ router.route('/:id')
     .put();
     
 router.route('/:id/participants')
-    .get(getUsers)
-    .put(addUser);
+    .get()
+    .put(addUser)
+    .delete(removeUser);
 
 router.route('/:id/participants/:userid')
-    .get()
-    .delete(removeUser);
+    .get();
 
 router.route('/:id/bars/')
     .get()
@@ -34,10 +35,11 @@ router.route('/:id/bars/:barid')
     .get()
     .delete(removeBar);
  
-module.exports = function(race,user,bar) {
+module.exports = function(race,user,bar,userctrl) {
     Race = race;
     User = user;
     Bar = bar;
+    userCtrl = userctrl;
     return router;
 };
 
@@ -131,8 +133,9 @@ function addRace(req, res){
             var startDate = new Date();                        
             var options = {
                 host: 'maps.googleapis.com',
-                path: '/maps/api/place/nearbysearch/json?key=AIzaSyD3PUPRq9aJRVeCXaIJo2_FDb6mEAxTSWE&location='+req.body.lat+','+req.body.lng+'&radius=2000&type=bar|cafe'
+                path: '/maps/api/place/nearbysearch/json?key=AIzaSyD3PUPRq9aJRVeCXaIJo2_FDb6mEAxTSWE&location='+req.body.lat+','+req.body.lng+'&radius=2000&type=night_club|bar|cafe'
             };
+            console.log(options);
             https.get(options, function (response) {
                 var content = '';
                                                     
@@ -159,7 +162,7 @@ function addRace(req, res){
                     );
                 });
                response.on('error', function(err){
-                  console.log('duh'); 
+                  console.log(err); 
                }); 
             });
         },
@@ -202,15 +205,12 @@ function addRace(req, res){
     });
 }
 
-function getUsers(req,res){
-    
-}
-
-function Add(query,type,id){
+function Add(query,type,id,res){
      Race.findOne(query,function (err,race) {
          switch(type){
              case 'user':
-                race.users.push(id);
+             console.log(id);
+                race.participants.push(id);
                 break;
              case 'bar':
                 race.bars.push(id);
@@ -225,50 +225,88 @@ function Add(query,type,id){
     });
 }
 
-function addUser(req,res){
-    Add(getRequestId(req),'user',req.body._id);
+function Remove(query,type,id,res){
+     Race.findOne(query,function (err,race) {
+        var i  = (type == 'user' ? race.participants.indexOf(id) : race.bars.indexOf(id));
+        if(i != -1){
+             switch(type){
+                case 'user':
+                    race.participants.splice(i,1);
+                    break;
+                case 'bar':
+                    race.bars.splice(i,1);
+                    break;
+            }
+            race.save(function(err) {
+                if (err)
+                    res.json(err);
+                else
+                    res.json(race);
+            });
+        }
+        else{
+            res.json('invalid id');
+        }
+    });
 }
 
-function addBar(req,res){
-    Add(getRequestId(req),'bar',req.body._id);
+function addUser(req,res){
+    var items = req.body.users;
+    
+    if(items.length == 0){
+        res.json('Empty list!');
+    }
+    async.waterfall([
+        function(callback) {
+            Race.find({'_id': req.params.id}, function(err, race) {
+                callback(err, race[0]);
+                });
+        },
+        function(race, callback) {
+            userCtrl.addToRace(race,items,callback);
+        },
+        function(updatedRace,callback){
+           updatedRace.save(function(err,race) {
+               callback(null,race);
+           });
+        }
+    ], function (err,race) {
+        res.json(race);
+    });
+    //Add(getRequestId(req),'user',req.body._id,res);
 }
 
 function removeUser(req,res){
-    var query = getRequestId(req);
-    Race.findOne(query,function (err,race) {
-        var i = race.users.indexOf(req.params.userid);
-        if(i != -1){
-            race.users.splice(i,1);
-            race.save(function(err) {
-                if (err)
-                    res.json(err);
-                else
-                    res.json(race);
+    var items = req.body.users;
+    if(items.length == 0){
+        res.json('Empty list!');
+    }
+    async.waterfall([
+        function(callback) {
+            Race.find({'_id': req.params.id}, function(err, race) {
+                callback(err, race[0]);
+                });
+        },
+        function(race, callback) {
+            userCtrl.removeFromRace(race,items,callback);
+        },
+        function(updatedRace,callback){
+            updatedRace.save(function(err,race) {
+                callback(null,race);
             });
         }
-        else{
-            res.json('invalid id');
-        }
+    ], function (err,race) {
+        res.json(race);
     });
+    //Remove(getRequestId(req),'user',req.body._id,res);
+}
+
+function addBar(req,res){
+    Add(getRequestId(req),'bar',req.body._id,res);
 }
 
 function removeBar(req,res){
-    var query = getRequestId(req);
-    Race.findOne(query,function (err,race) {
-        var i = race.bars.indexOf(req.params.barid);
-        if(i != -1){
-            race.bars.splice(i,1);
-            race.save(function(err) {
-                if (err)
-                    res.json(err);
-                else
-                    res.json(race);
-            });
-        }
-        else{
-            res.json('invalid id');
-        }
-    });
+    Remove(getRequestId(req),'bar',req.body._id,res);
 }
 
 function getRequestId(req){
