@@ -4,6 +4,10 @@ module.exports = function(mongoose){
             type: String,
             required: true
         },
+        google_id: {
+            type: String,
+            required: true
+        },
         location: {
             lat: { type: Number, required: true },
             long: { type: Number, required: true },

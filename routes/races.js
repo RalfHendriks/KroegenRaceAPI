@@ -33,6 +33,7 @@ router.route('/:id/bars/')
     
 router.route('/:id/bars/:barid')
     .get()
+    .put()
     .delete(removeBar);
  
 module.exports = function(race,user,bar,userctrl) {
@@ -154,6 +155,7 @@ function addRace(req, res){
                         newBar.location.address.street = address[(address.length -2)];
                         newBar.location.address.city = address[(address.length -1)];
                         newBar.name = googlePlacesBar.name;
+                        newBar.google_id = googlePlacesBar.place_id;
                         newBar.available = true;
                         bars.push(newBar);
                     });
@@ -168,16 +170,15 @@ function addRace(req, res){
         },
         function(bars, callback) {
             bars.forEach(function(selectedBar){
-                console.log(selectedBar);
                 Bar.findOne({'name' : selectedBar.name,'lat': selectedBar.lat,'long': selectedBar.long} ,function (err,bar) {
                     if(bar == null){
                     selectedBar.save(function(err,newbar){
                             selectedBar = newbar;
-                            console.log(err);
                         });
                     }
                     else
                     {
+                        console.log('b');
                         selectedBar = bar;
                     }
                 });
@@ -185,13 +186,22 @@ function addRace(req, res){
             callback(null, bars);
         },
         function(barlist, callback) {
-            barlist.forEach(function(bar){
-                newRace.bars.push({'bar':bar,'visited':false});
-            })
+        async.each(barlist,function(bar, callback){
+            console.log(bar);
+            newRace.bars.push({'bar':bar,'visited':false});
+            callback();
+        },
+        // 3rd param is the function to call when everything's done
+        function(err){
             newRace.save(function(err){
                console.log(err); 
             });
             callback(null);
+        }
+        );
+            /*barlist.forEach(function(bar){
+                newRace.bars.push({'bar':bar,'visited':false});
+            });*/
         }
         ], 
         function (err) {
