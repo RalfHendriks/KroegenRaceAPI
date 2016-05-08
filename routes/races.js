@@ -33,7 +33,7 @@ router.route('/:id/bars/')
     
 router.route('/:id/bars/:barid')
     .get()
-    .put()
+    .put(checkIn)
     .delete(removeBar);
  
 module.exports = function(race,user,bar,userctrl) {
@@ -43,6 +43,21 @@ module.exports = function(race,user,bar,userctrl) {
     userCtrl = userctrl;
     return router;
 };
+
+function checkIn(req,res){
+    var barId = req.params.barid;
+    Race.find({'_id': req.params.id}, function(err, race) {
+         race[0].bars.forEach(function(element) {
+             if(element.bar == barId){
+                 console.log('true');
+                 element.visited = req.body.visited;
+                 race[0].save(function(err,newbar){
+                     console.log(err);
+                 });
+             }
+         }, this);
+    });
+}
 
 function getHeaderType(req){
     var headerType = req.get('Content-Type');
