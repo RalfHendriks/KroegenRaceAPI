@@ -113,7 +113,7 @@ function getRaces(req, res){
                 async.forEach(race.bars, function (currItem, callback2) {
                         Bar.find({'_id': currItem.bar}, function(err,bar){
                             if(bar[count] != 'undefined'){
-                                race.bars[count] = {'bar':bar,'visited': false};
+                                race.bars[count] = {'bar':bar,'visited': currItem.visited};
                             }
                             count = count +1;
                             callback2(err);
