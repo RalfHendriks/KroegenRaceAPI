@@ -52,7 +52,7 @@ function checkIn(req,res){
                  console.log('true');
                  element.visited = req.body.visited;
                  race[0].save(function(err,newbar){
-                     console.log(err);
+                     res.json('succes');
                  });
              }
          }, this);
@@ -89,6 +89,22 @@ function renderPage(type, data,target,permission,res){
             break;
     }
 }
+
+function processQuery(requestQuery){
+    var query = {};
+    if(requestQuery.sort){
+        switch (requestQuery.sort) {
+            case 'asc':
+                query = {created_at: 'asc'};
+                break;
+            case 'desc':
+                query = {created_at: 'desc'};
+                break;
+        }
+        console.log(query.date);
+    }
+    return query;
+}
     
 function getRaces(req, res){
     var permissionLevel = auth.validAction(req.user);
@@ -101,9 +117,10 @@ function getRaces(req, res){
             query = {'raceLeader': req.user._id};
             break;
     }
+    var sortStr  = processQuery(req.query);
         async.waterfall([
             function(callback) {
-                Race.find(query).sort('-date').exec(function(err, races) {
+                Race.find(query).sort(sortStr).exec(function(err, races) {
                     callback(null, races);
                   });
             },
@@ -157,7 +174,6 @@ function addRace(req, res){
                                                     
                 response.on('data', function (chunk) {
                     content += chunk;
-                    console.log('reached!');
                 });
 
                 response.on('end', function () {
@@ -184,7 +200,9 @@ function addRace(req, res){
             });
         },
         function(bars, callback) {
+            var foundBars = [];
             bars.forEach(function(selectedBar){
+                console.log(selectedBar._id);
                 Bar.findOne({'name' : selectedBar.name,'lat': selectedBar.lat,'long': selectedBar.long} ,function (err,bar) {
                     if(bar == null){
                     selectedBar.save(function(err,newbar){
@@ -193,12 +211,17 @@ function addRace(req, res){
                     }
                     else
                     {
-                        console.log('b');
-                        selectedBar = bar;
+                        foundBars.push(bar);
                     }
                 });
             });
-            callback(null, bars);
+            if(foundBars.length != 0){
+                callback(null, foundBars);
+            }
+            else{
+                callback(null, bars);
+            }
+
         },
         function(barlist, callback) {
         async.each(barlist,function(bar, callback){
@@ -208,6 +231,7 @@ function addRace(req, res){
         },
         // 3rd param is the function to call when everything's done
         function(err){
+            console.log(newRace.bars);
             newRace.save(function(err){
                console.log(err); 
             });
