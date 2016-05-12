@@ -37,7 +37,7 @@ function getUsers(req,res)
         });
     }
     else{
-        res.render('404');  
+        res.json('Permission denied!'); 
     }
 
 }

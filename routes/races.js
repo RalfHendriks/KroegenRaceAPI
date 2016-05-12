@@ -148,15 +148,34 @@ function getRaces(req, res){
 
 function getRace(req,res){
     var query = getRequestId(req);
-    Race.findOne(query,function (err,race) {
-        if(race != null){
-                                console.log(race);
-            renderPage(req.accepts('text/html', 'application/json'),race,'racedetails',auth.validAction(req.user),res);
-        }
-        else{
-              res.json('Invalid Race id');  
-        } 
-    });
+            async.waterfall([
+            function(callback) {
+                Race.findOne(query, function(err, race) {
+                    callback(null, race);
+                  });
+            },
+            function(race, callback) {
+                if(race != null){
+                        var count = 0;
+                        async.forEach(race.bars, function (currItem, callback1) {
+                                Bar.find({'_id': currItem.bar}, function(err,bar){
+                                    if(bar[count] != 'undefined'){
+                                        race.bars[count] = {'bar':bar,'visited': currItem.visited};
+                                    }
+                                    count = count +1;
+                                    callback1();
+                                });  
+                    }, function (err) {
+                        callback(null, race);
+                    });
+                    }
+                else{
+                    res.json('Invalid Race id');  
+                }
+            }
+        ], function (err, result) {
+            renderPage(getHeaderType(req),result,'race',auth.validAction(req.user),res);
+        });
 }
 
 function addRace(req, res){

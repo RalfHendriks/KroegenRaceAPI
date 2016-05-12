@@ -9,10 +9,19 @@ var config = require('../config')();
 
 var app = require('express')();
 var User = require('../models/user')(mongoose,bcrypt);
+var Bar  = require('../models/bar')(mongoose);
 var Race = require('../models/race')(mongoose);
 
+var UserController = require('../controllers/userController');
+var BarController = require('../controllers/barController');
+
+var userCtrl = new UserController(User);
+var barCtrl = new BarController(Bar);
+
+
 var routes = require('../routes/index')(passport);
-var races = require('../routes/races')(Race);
+var bars = require('../routes/bars')(Bar);
+var races = require('../routes/races')(Race,User,Bar,userCtrl);
 var users = require('../routes/users')(User);
 
 app.use('/', routes);
@@ -31,7 +40,7 @@ describe('Routing', function() {
     describe('GET /races', function() {
         it('respond with json', function(done) {
             request(app)
-                .get('/races/5707098141ee13db4bdb53ae')
+                .get('/races')
                 .set('Accept', 'application/json')
                 .expect(200)
                 .end(function(err, res) {
