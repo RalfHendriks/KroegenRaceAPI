@@ -10,9 +10,10 @@ module.exports = function(mongoose){
         updated_at: Date,
         raceLeader: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-        bars: [{ bar: {type: mongoose.Schema.Types.ObjectId, ref: 'Bar'},
+        bars: [{ _id:false,
+                 bar: {type: mongoose.Schema.Types.ObjectId, ref: 'Bar'},
                  visited: {type: Boolean, default:false, required: true},
-                _id: false  }],
+                },{id: false}],
     });
    
     raceSchema.pre('save', function(next) {

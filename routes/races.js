@@ -16,12 +16,11 @@ router.route('/')
     
 router.route('/:id')
     .get(getRace)
-    //.get(getNewRace)
     .delete()
     .put();
     
 router.route('/:id/participants')
-    .get()
+    .get(getParticipants)
     .put(addUser)
     .delete(removeUser);
 
@@ -30,7 +29,8 @@ router.route('/:id/participants/:userid')
 
 router.route('/:id/bars/')
     .get()
-    .put(addBar);
+    .put(addBar)
+    .delete(removeBar);
     
 router.route('/:id/bars/:barid')
     .get()
@@ -120,159 +120,73 @@ function getRaces(req, res){
     }
     Race.find(query)
         .populate('bars.bar')
+        .populate('participants')
         .exec(function (err, result) {
             renderPage(getHeaderType(req),result,'race',auth.validAction(req.user),res);
         });
-}
-
-function getNewRace(req,res){
-    console.log(req.params.id);
-Race
-.findById(req.params.id)
-.populate('bars.bar') // only works if we pushed refs to children
-.exec(function (err, person) {
-  console.log(err);
-  console.log(person.bars);
-});
 }
 
 function getRace(req,res){
     var query = getRequestId(req);
     Race.findOne(query)
         .populate('bars.bar')
+        .populate('participants')
         .exec(function (err, result) {
-            console.log(result);
+            console.log(err);
+            renderPage(getHeaderType(req),result,'race',auth.validAction(req.user),res);
+        });
+}
+
+function getParticipants(req,res){
+    var query = getRequestId(req);
+    Race.findOne(query)
+        .populate('participants')
+        .exec(function (err, result) {
+            console.log(err);
             renderPage(getHeaderType(req),result,'race',auth.validAction(req.user),res);
         });
 }
 
 function addRace(req, res){
     var newRace = new Race(req.body);
-
-    /*req.body.bars.forEach(function(selectedBar){
-
-        var newBar = new Bar(selectedBar);
-        Bar.findOne({'name' : selectedBar.name,'lat': selectedBar.lat,'long': selectedBar.long} ,function (err,bar) {
-            if(bar == null){
-            newBar.save(function(err,currentBar){});
-            }
+    var bars = [];
+    if(req.body.bars[0].bar == undefined){
+        req.body.bars.forEach(function(selectedBar){
+            var bar = {
+                "bar": selectedBar,
+                "visited": false
+            };
+            bars.push(bar);
         });
-    });*/
+        newRace.bars = bars;
+    }
     newRace.save(function(err,race){
         req.body.bars.forEach(function(selectedBar){
             var newBar = new Bar(selectedBar);
             Bar.findOne({'name' : selectedBar.name,'lat': selectedBar.lat,'long': selectedBar.long} ,function (err,bar) {
                 if(bar == null){
                     newBar.races.push(race);
-                    console.log(newBar);
                     newBar.save(function(err,currentBar){});
                 }
             });
         });
         res.json(race); 
     });
-    /*async.waterfall([
-        function(callback) {
-            var startDate = new Date();                        
-            var options = {
-                host: 'maps.googleapis.com',
-                path: '/maps/api/place/nearbysearch/json?key=AIzaSyD3PUPRq9aJRVeCXaIJo2_FDb6mEAxTSWE&location='+req.body.lat+','+req.body.lng+'&radius=2000&type=night_club|bar|cafe'
-            };
-            console.log(options);
-            https.get(options, function (response) {
-                var content = '';
-                                                    
-                response.on('data', function (chunk) {
-                    content += chunk;
-                });
-
-                response.on('end', function () {
-                    var bars = [];
-                    JSON.parse(content).results.forEach(function(googlePlacesBar) {
-                        var newBar = new Bar();
-                        newBar.location.lat = googlePlacesBar.geometry.location.lat;
-                        newBar.location.long = googlePlacesBar.geometry.location.lng;
-                        var address = googlePlacesBar.vicinity.split(",");
-                        newBar.location.address.street = address[(address.length -2)];
-                        newBar.location.address.city = address[(address.length -1)];
-                        newBar.name = googlePlacesBar.name;
-                        newBar.google_id = googlePlacesBar.place_id;
-                        newBar.available = true;
-                        bars.push(newBar);
-                    });
-                    callback(null,
-                        bars
-                    );
-                });
-               response.on('error', function(err){
-                  console.log(err); 
-               }); 
-            });
-        },
-        function(bars, callback) {
-            var foundBars = [];
-            bars.forEach(function(selectedBar){
-                console.log(selectedBar._id);
-                Bar.findOne({'name' : selectedBar.name,'lat': selectedBar.lat,'long': selectedBar.long} ,function (err,bar) {
-                    if(bar == null){
-                    selectedBar.save(function(err,newbar){
-                            selectedBar = newbar;
-                        });
-                    }
-                    else
-                    {
-                        foundBars.push(bar);
-                    }
-                });
-            });
-            if(foundBars.length != 0){
-                callback(null, foundBars);
-            }
-            else{
-                callback(null, bars);
-            }
-
-        },
-        function(barlist, callback) {
-        async.each(barlist,function(bar, callback){
-            console.log(bar);
-            newRace.bars.push({'bar':bar,'visited':false});
-            callback();
-        },
-        // 3rd param is the function to call when everything's done
-        function(err){
-            console.log(newRace.bars);
-            newRace.save(function(err){
-               console.log(err); 
-            });
-            callback(null);
-        }
-        );
-            /*barlist.forEach(function(bar){
-                newRace.bars.push({'bar':bar,'visited':false});
-            });
-        }
-        ], 
-        function (err) {
-            if(err == null){
-                res.json(newRace); 
-            }
-            else{
-                console.log(err);
-            }
-
-    });*/
 }
 
 function Add(query,type,id,res){
      Race.findOne(query,function (err,race) {
          switch(type){
              case 'user':
-             console.log(id);
+                console.log(id);
                 race.participants.push(id);
                 break;
              case 'bar':
-                race.bars.push(id);
+                race.bars.push(
+                    {
+                        "bar": id,
+                        "visited": false
+                    });
                 break;
          }
         race.save(function(err) {
@@ -311,61 +225,131 @@ function Remove(query,type,id,res){
 
 function addUser(req,res){
     var items = req.body.users;
-    
+    var query = getRequestId(req);
+    var processedItems = 0;
+    var error;
+    var unkownparticipants = [];
+     
     if(items.length == 0){
         res.json('Empty list!');
     }
-    async.waterfall([
-        function(callback) {
-            Race.find({'_id': req.params.id}, function(err, race) {
-                callback(err, race[0]);
-                });
-        },
-        function(race, callback) {
-            userCtrl.addToRace(race,items,callback);
-        },
-        function(updatedRace,callback){
-           updatedRace.save(function(err,race) {
-               callback(null,race);
-           });
-        }
-    ], function (err,race) {
-        res.json(race);
+
+    items.forEach(function(item) {
+        Race.find({participants: item}, function (err,result) {
+            if(err != undefined){
+                error = err;
+                unkownparticipants.push(item);
+            }
+            else{
+                if(result[0] == undefined){
+                    Race.update(query,{$push: {participants: item } },function (err) {
+                        if(err)
+                        console.log(err);
+                    });
+                }
+            }
+            processedItems++;
+            if(processedItems == items.length){
+                if(error != undefined){
+                    res.json('Invalid participant in array! '+unkownparticipants);
+                }
+                else{
+                    res.json('Participants added.');
+                }
+            }
+        });
     });
-    //Add(getRequestId(req),'user',req.body._id,res);
 }
 
 function removeUser(req,res){
     var items = req.body.users;
+    var query = getRequestId(req);
+    
     if(items.length == 0){
         res.json('Empty list!');
     }
-    async.waterfall([
-        function(callback) {
-            Race.find({'_id': req.params.id}, function(err, race) {
-                callback(err, race[0]);
-                });
-        },
-        function(race, callback) {
-            userCtrl.removeFromRace(race,items,callback);
-        },
-        function(updatedRace,callback){
-            updatedRace.save(function(err,race) {
-                callback(null,race);
-            });
+    Race.update(query, { $pullAll: { participants: items } } , function (err,result){
+       if(err){
+         console.log(err);
+       }
+       if(result.nModified > 0){
+            res.json('Participants removed.');
         }
-    ], function (err,race) {
-        res.json(race);
+        else{
+            res.json('No valid participants.');
+        }
     });
-    //Remove(getRequestId(req),'user',req.body._id,res);
 }
 
 function addBar(req,res){
-    Add(getRequestId(req),'bar',req.body._id,res);
+    var items = req.body.bars;
+    var query = getRequestId(req);
+    var processedItems = 0;
+    var error;
+    var unkownBars = [];
+    
+    if(items.length == 0){
+        res.json('Empty list!');
+    }
+    
+    items.forEach(function(item) {
+        Race.find({"bars.bar": item}, function (err,result) {
+            if(err != undefined){
+                error = err;
+                unkownBars.push(item);
+            }
+            else{
+                if(result[0] == undefined){
+                    var newBar = {
+                        "bar": item,
+                        "visited": false
+                    };
+                    Race.update(query,{$push: {bars: newBar } },function (err) {
+                        if(err)
+                        console.log(err);
+                    });
+                }
+            }
+            processedItems++;
+            if(processedItems == items.length){
+                console.log(unkownBars);
+                if(error != undefined){
+                    res.json('Invalid bars in array! '+unkownBars);
+                }
+                else{
+                    res.json('Bars added.');
+                }
+            }
+        });
+    });
 }
 
 function removeBar(req,res){
-    Remove(getRequestId(req),'bar',req.body._id,res);
+    var items = req.body.bars;
+    var query = getRequestId(req);
+    var processedItems = 0;
+    var error;
+    
+    if(items.length == 0){
+        res.json('Empty list!');
+    }
+    
+    items.forEach(function(element) {
+        Race.update(query, { $pull: { 'bars':{'bar': element } } } , function (err,result){
+            if(err){
+                error = err;
+            }
+            processedItems++;
+            if(processedItems == items.length){
+                if(error != undefined){
+                    res.json('Invalid bars in array!');
+                }
+                else{
+                    res.json('Bars removed.');
+                }
+            }
+        });
+    });
 }
 
 function getRequestId(req){

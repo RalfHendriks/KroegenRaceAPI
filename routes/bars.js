@@ -54,11 +54,19 @@ function getBars(req, res){
 }
 
 function getBar(req, res){
-    
+        Bar.findOne(req.params.id)
+        .populate('races')
+        .exec(function (err, result) {
+            console.log(err);
+            res.json(result);
+        });
 }
 
 function addBar(req, res){
-    
+    var newBar = new Bar(req.body);
+    newBar.save(function(err,newBar) {
+        res.json(newBar);
+    });
 }
 
 function removeBar(req, res){
