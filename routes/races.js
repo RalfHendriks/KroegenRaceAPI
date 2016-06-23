@@ -16,6 +16,7 @@ router.route('/')
     
 router.route('/:id')
     .get(getRace)
+    //.get(getNewRace)
     .delete()
     .put();
     
@@ -117,70 +118,60 @@ function getRaces(req, res){
             query = {'raceLeader': req.user._id};
             break;
     }
-    var sortStr  = processQuery(req.query);
-        async.waterfall([
-            function(callback) {
-                Race.find(query).sort(sortStr).exec(function(err, races) {
-                    callback(null, races);
-                  });
-            },
-            function(races, callback) {
-            async.forEach(races, function (race, callback1) {
-                var count = 0;
-                async.forEach(race.bars, function (currItem, callback2) {
-                        Bar.find({'_id': currItem.bar}, function(err,bar){
-                            if(bar[count] != 'undefined'){
-                                race.bars[count] = {'bar':bar,'visited': currItem.visited};
-                            }
-                            count = count +1;
-                            callback2(err);
-                        });  
-                }, callback1);
-            }, function (err) {
-                callback(null, races);
-            });
-            }
-        ], function (err, result) {
+    Race.find(query)
+        .populate('bars.bar')
+        .exec(function (err, result) {
             renderPage(getHeaderType(req),result,'race',auth.validAction(req.user),res);
         });
-        
+}
+
+function getNewRace(req,res){
+    console.log(req.params.id);
+Race
+.findById(req.params.id)
+.populate('bars.bar') // only works if we pushed refs to children
+.exec(function (err, person) {
+  console.log(err);
+  console.log(person.bars);
+});
 }
 
 function getRace(req,res){
     var query = getRequestId(req);
-            async.waterfall([
-            function(callback) {
-                Race.findOne(query, function(err, race) {
-                    callback(null, race);
-                  });
-            },
-            function(race, callback) {
-                if(race != null){
-                        var count = 0;
-                        async.forEach(race.bars, function (currItem, callback1) {
-                                Bar.find({'_id': currItem.bar}, function(err,bar){
-                                    if(bar[count] != 'undefined'){
-                                        race.bars[count] = {'bar':bar,'visited': currItem.visited};
-                                    }
-                                    count = count +1;
-                                    callback1();
-                                });  
-                    }, function (err) {
-                        callback(null, race);
-                    });
-                    }
-                else{
-                    res.json('Invalid Race id');  
-                }
-            }
-        ], function (err, result) {
+    Race.findOne(query)
+        .populate('bars.bar')
+        .exec(function (err, result) {
+            console.log(result);
             renderPage(getHeaderType(req),result,'race',auth.validAction(req.user),res);
         });
 }
 
 function addRace(req, res){
     var newRace = new Race(req.body);
-    async.waterfall([
+
+    /*req.body.bars.forEach(function(selectedBar){
+
+        var newBar = new Bar(selectedBar);
+        Bar.findOne({'name' : selectedBar.name,'lat': selectedBar.lat,'long': selectedBar.long} ,function (err,bar) {
+            if(bar == null){
+            newBar.save(function(err,currentBar){});
+            }
+        });
+    });*/
+    newRace.save(function(err,race){
+        req.body.bars.forEach(function(selectedBar){
+            var newBar = new Bar(selectedBar);
+            Bar.findOne({'name' : selectedBar.name,'lat': selectedBar.lat,'long': selectedBar.long} ,function (err,bar) {
+                if(bar == null){
+                    newBar.races.push(race);
+                    console.log(newBar);
+                    newBar.save(function(err,currentBar){});
+                }
+            });
+        });
+        res.json(race); 
+    });
+    /*async.waterfall([
         function(callback) {
             var startDate = new Date();                        
             var options = {
@@ -259,7 +250,7 @@ function addRace(req, res){
         );
             /*barlist.forEach(function(bar){
                 newRace.bars.push({'bar':bar,'visited':false});
-            });*/
+            });
         }
         ], 
         function (err) {
@@ -270,7 +261,7 @@ function addRace(req, res){
                 console.log(err);
             }
 
-    });
+    });*/
 }
 
 function Add(query,type,id,res){

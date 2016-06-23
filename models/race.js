@@ -11,7 +11,7 @@ module.exports = function(mongoose){
         raceLeader: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
         bars: [{ bar: {type: mongoose.Schema.Types.ObjectId, ref: 'Bar'},
-                 visited: {type: Boolean, required: true},
+                 visited: {type: Boolean, default:false, required: true},
                 _id: false  }],
     });
    

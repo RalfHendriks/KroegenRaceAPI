@@ -30,9 +30,11 @@ var user = new ConnectRoles({
     }
   }
 });
+
 var User = require('./models/user')(mongoose,bcrypt);
-var Bar  = require('./models/bar')(mongoose);
 var Race = require('./models/race')(mongoose);
+var Bar  = require('./models/bar')(mongoose);
+
 
 var UserController = require('./controllers/userController');
 var BarController = require('./controllers/barController');
