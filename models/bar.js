@@ -24,7 +24,7 @@ module.exports = function(mongoose){
             type: Boolean,
             required: true
         },
-        races: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Race' }],
+        races: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Race' }]
     });
 
     barSchema.methods.findDuplicate = function findDuplicate (cb) {
