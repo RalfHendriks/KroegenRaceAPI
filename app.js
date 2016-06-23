@@ -31,6 +31,7 @@ var user = new ConnectRoles({
   }
 });
 
+
 var User = require('./models/user')(mongoose,bcrypt);
 var Race = require('./models/race')(mongoose);
 var Bar  = require('./models/bar')(mongoose);
