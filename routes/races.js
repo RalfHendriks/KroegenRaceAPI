@@ -6,13 +6,14 @@ var async = require('async');
 var authorization = require('../config/authorization');
 var auth = new authorization();
 var Race;
-var User;
 var Bar;
-var userCtrl;
 
 router.route('/')
     .get(getRaces)
     .post(addRace);
+
+router.route('/create')
+    .get(createRace);
     
 router.route('/:id')
     .get(getRace)
@@ -21,27 +22,27 @@ router.route('/:id')
     
 router.route('/:id/participants')
     .get(getParticipants)
-    .put(addUser)
-    .delete(removeUser);
+    .put()
+    .post(addUser)
+    .delete();
 
 router.route('/:id/participants/:userid')
-    .get();
+    .get()
+    .delete(removeUser);
 
 router.route('/:id/bars/')
-    .get()
-    .put(addBar)
-    .delete(removeBar);
+    .get(getBars)
+    .post(addBar)
+    .delete();
     
 router.route('/:id/bars/:barid')
     .get()
     .put(checkIn)
     .delete(removeBar);
  
-module.exports = function(race,user,bar,userctrl) {
+module.exports = function(race,bar) {
     Race = race;
-    User = user;
     Bar = bar;
-    userCtrl = userctrl;
     return router;
 };
 
@@ -78,7 +79,7 @@ function renderPage(type, data,target,permission,res){
             break;
         case 'text/html':
                 if(permission == '1'){
-                        console.log(data);
+                    res.render(target, {data: data,userPermission: permission });
                     res.render(target, {data: data,userPermission: permission });
                 }
                 else{
@@ -106,6 +107,11 @@ function processQuery(requestQuery){
     }
     return query;
 }
+
+function createRace(req,res){
+    renderPage(getHeaderType(req),'createRace','create_race',auth.validAction(req.user),res);
+}
+
     
 function getRaces(req, res){
     var permissionLevel = auth.validAction(req.user);
@@ -122,7 +128,7 @@ function getRaces(req, res){
         .populate('bars.bar')
         .populate('participants')
         .exec(function (err, result) {
-            renderPage(getHeaderType(req),result,'race',auth.validAction(req.user),res);
+            renderPage(getHeaderType(req),result,'race',permissionLevel,res);
         });
 }
 
@@ -132,8 +138,12 @@ function getRace(req,res){
         .populate('bars.bar')
         .populate('participants')
         .exec(function (err, result) {
-            console.log(err);
-            renderPage(getHeaderType(req),result,'race',auth.validAction(req.user),res);
+            if(err != undefined){
+                res.json('Invalid Id');
+            }
+            else{
+                renderPage(getHeaderType(req),result,'racedetails',auth.validAction(req.user),res);
+            }
         });
 }
 
@@ -143,7 +153,7 @@ function getParticipants(req,res){
         .populate('participants')
         .exec(function (err, result) {
             console.log(err);
-            renderPage(getHeaderType(req),result,'race',auth.validAction(req.user),res);
+            renderPage(getHeaderType(req),result.participants,'race',auth.validAction(req.user),res);
         });
 }
 
@@ -262,23 +272,28 @@ function addUser(req,res){
 }
 
 function removeUser(req,res){
-    var items = req.body.users;
     var query = getRequestId(req);
-    
-    if(items.length == 0){
-        res.json('Empty list!');
-    }
-    Race.update(query, { $pullAll: { participants: items } } , function (err,result){
+    Race.update(query, { $pull: { participants: req.params.userid } } , function (err,result){
        if(err){
          console.log(err);
        }
        if(result.nModified > 0){
-            res.json('Participants removed.');
+            res.json('Participant removed.');
         }
         else{
             res.json('No valid participants.');
         }
     });
+}
+
+function getBars(req,res){
+    var query = getRequestId(req);
+    Race.findOne(query)
+        .populate('bars.bar')
+        .exec(function (err, result) {
+            console.log(err);
+            renderPage(getHeaderType(req),result.bars,'race',auth.validAction(req.user),res);
+        });
 }
 
 function addBar(req,res){
@@ -325,30 +340,18 @@ function addBar(req,res){
 }
 
 function removeBar(req,res){
-    var items = req.body.bars;
     var query = getRequestId(req);
-    var processedItems = 0;
-    var error;
     
-    if(items.length == 0){
-        res.json('Empty list!');
-    }
-    
-    items.forEach(function(element) {
-        Race.update(query, { $pull: { 'bars':{'bar': element } } } , function (err,result){
-            if(err){
-                error = err;
-            }
-            processedItems++;
-            if(processedItems == items.length){
-                if(error != undefined){
-                    res.json('Invalid bars in array!');
-                }
-                else{
-                    res.json('Bars removed.');
-                }
-            }
-        });
+    Race.update(query, { $pull: { 'bars':{'bar': req.params.barid } } } , function (err,result){
+        if(err){
+            console.log(err);
+        }
+        if(result.nModified > 0){
+            res.json('Invalid bar!');
+        }
+        else{
+            res.json('Bar removed.');
+        }
     });
 }
 

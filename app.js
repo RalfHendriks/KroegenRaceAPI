@@ -36,16 +36,9 @@ var User = require('./models/user')(mongoose,bcrypt);
 var Race = require('./models/race')(mongoose);
 var Bar  = require('./models/bar')(mongoose);
 
-
-var UserController = require('./controllers/userController');
-var BarController = require('./controllers/barController');
-
-var userCtrl = new UserController(User);
-var barCtrl = new BarController(Bar);
-
 var routes = require('./routes/index')(passport);
 var bars = require('./routes/bars')(Bar);
-var races = require('./routes/races')(Race,User,Bar,userCtrl);
+var races = require('./routes/races')(Race,Bar);
 var users = require('./routes/users')(User);
 
 
