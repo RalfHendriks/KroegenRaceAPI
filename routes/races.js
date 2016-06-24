@@ -137,11 +137,13 @@ function getRace(req,res){
     Race.findOne(query)
         .populate('bars.bar')
         .populate('participants')
+        .populate('raceLeader')
         .exec(function (err, result) {
             if(err != undefined){
                 res.json('Invalid Id');
             }
             else{
+                console.log(result);
                 renderPage(getHeaderType(req),result,'racedetails',auth.validAction(req.user),res);
             }
         });
