@@ -17,12 +17,9 @@
                     <li><a href="#getAllRaces">Get all races</a></li>
                     <li><a href="#createRace">Create race</a></li>
                     <li><a href="#getRace">Get race</a></li>
-                    <li><a href="#removeRace">Remove race</a></li>
-                    <li><a href="#updateRace">Update race</a></li>
                     <li><a href="#getParticipants">Get participants</a></li>
                     <li><a href="#addParticipants">Add participants</a></li>
                     <li><a href="#removeParticipants">Remove participants</a></li>
-                    <li><a href="#getParticipant">Get participant</a></li>
                 </ul>
             </li>
         </ul>
@@ -124,24 +121,33 @@
                 </tr>
                 <tr>
                     <th>URL Params</th>
-                    <td></td>
+                        <td>n/a</td>
                 </tr>
                 <tr>
                     <th>Data Params</th>
                     <td>
                         <pre>
 name: [string],
-created_at: [date],
-updated_at: [date],
 raceLeader: [User],
 participants: [
     [User]
 ],
 bars: [
     {
-        _id:false,
-        bar: [Bar],
-        visited: [boolean],
+        "available": true,
+        "google_id": "ChIJ2ZBFd6Qrx0cRQTRv2i1vZLs",
+        "name": "zuiderpoortCafé",
+        "_id": "576cfe5e8e381c700d7e29b2",
+        "races": [],
+        "ratings": [],
+        "location": {
+        "long": 5.5692172,
+        "lat": 51.2609826,
+        "address": {
+            "city": " Budel",
+            "street": "Sportlaan 7"
+        }
+        }
     },
 ]
                         </pre>
@@ -149,7 +155,49 @@ bars: [
                 </tr>
                 <tr>
                     <th>Success Response</th>
-                    <td></td>
+                    <td>
+                    <pre>
+                    {
+                        "__v": 0,
+                        "created_at": "2016-06-24T09:34:20.591Z",
+                        "updated_at": "2016-06-24T09:34:20.591Z",
+                        "raceLeader": "5702c4981adb13154894face",
+                        "name": "race Budel Yeah",
+                        "_id": "576cfe9c8e381c700d7e29be",
+                        "bars": [
+                            {
+                            "bar": "576bac4a6feb96a02f47c20c",
+                            "visited": false
+                            },
+                            {
+                            "bar": "576bac4a6feb96a02f47c20d",
+                            "visited": false
+                            },
+                            {
+                            "bar": "576bac4a6feb96a02f47c20f",
+                            "visited": false
+                            },
+                            {
+                            "bar": "576bac4a6feb96a02f47c210",
+                            "visited": false
+                            },
+                            {
+                            "bar": "576bac4a6feb96a02f47c211",
+                            "visited": false
+                            },
+                            {
+                            "bar": "576bac4a6feb96a02f47c213",
+                            "visited": false
+                            },
+                            {
+                            "bar": "576bac4a6feb96a02f47c215",
+                            "visited": false
+                            }
+                        ],
+                        "participants": []
+                    }
+                    </pre>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -172,80 +220,186 @@ bars: [
                     <td>:id = [string]</td>
                 </tr>
                 <tr>
-                    <th>Query Params</th>
-                    <td></td>
-                </tr>
-                <tr>
                     <th>Data Params</th>
-                    <td></td>
+                        <td>n/a</td>
                 </tr>
                 <tr>
                     <th>Success Response</th>
-                    <td></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <h3 id="removeRace">Remove race</h3>
-        <div class="span10"><br/>
-            <table class="table table-hover">
-                <tbody>
-                <tr>
-                    <th>URL</th>
-                    <td>/races/:id</td>
-                </tr>
-                <tr>
-                    <th>Method</th>
-                    <td>REMOVE</td>
-                </tr>
-                <tr>
-                    <th>URL Params</th>
-                    <td>:id = [string]</td>
-                </tr>
-                <tr>
-                    <th>Query Params</th>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th>Data Params</th>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th>Success Response</th>
-                    <td></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <h3 id="updateRace">Update race</h3>
-        <div class="span10"><br/>
-            <table class="table table-hover">
-                <tbody>
-                <tr>
-                    <th>URL</th>
-                    <td>/races/:id</td>
-                </tr>
-                <tr>
-                    <th>Method</th>
-                    <td>PUT</td>
-                </tr>
-                <tr>
-                    <th>URL Params</th>
-                    <td>:id = [string]</td>
-                </tr>
-                <tr>
-                    <th>Query Params</th>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th>Data Params</th>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th>Success Response</th>
-                    <td></td>
+                    <td>
+                    <pre>
+{
+  "_id": "576cfe9c8e381c700d7e29be",
+  "created_at": "2016-06-24T09:34:20.591Z",
+  "updated_at": "2016-06-24T09:34:20.591Z",
+  "raceLeader": {
+    "_id": "5702c4981adb13154894face",
+    "created_at": "2016-04-04T19:46:32.797Z",
+    "updated_at": "2016-04-07T14:55:41.129Z",
+    "role": "admin",
+    "age": "1993-11-15T00:00:00.000Z",
+    "name": "Ralf Hendriks",
+  },
+  "name": "race Budel Yeah",
+  "__v": 0,
+  "bars": [
+    {
+      "bar": {
+        "_id": "576bac4a6feb96a02f47c20c",
+        "available": true,
+        "google_id": "ChIJT0XDHMArx0cRe3_pxnWu5G4",
+        "name": "Café Zaal De Bellevue",
+        "__v": 0,
+        "races": [
+          "576be0926b8cf8f03e1a1703"
+        ],
+        "ratings": [],
+        "location": {
+          "long": 5.581622299999998,
+          "lat": 51.2778522,
+          "address": {
+            "city": " Budel",
+            "street": "Maarheezerweg 1"
+          }
+        }
+      },
+      "visited": false
+    },
+    {
+      "bar": {
+        "_id": "576bac4a6feb96a02f47c20d",
+        "available": true,
+        "google_id": "ChIJa7kh374rx0cR_s7gRiLxO9c",
+        "name": "De Bonte Os - eetcafé & zaal",
+        "__v": 0,
+        "races": [
+          "576be0926b8cf8f03e1a1703"
+        ],
+        "ratings": [],
+        "location": {
+          "long": 5.576281900000001,
+          "lat": 51.2746131,
+          "address": {
+            "city": " Budel",
+            "street": "Doctor Ant. Mathijsenstraat 12"
+          }
+        }
+      },
+      "visited": false
+    },
+    {
+      "bar": {
+        "_id": "576bac4a6feb96a02f47c20f",
+        "available": true,
+        "google_id": "ChIJPdxVxL4rx0cRHOLz17bkgzE",
+        "name": "Cambrinus Bar",
+        "__v": 0,
+        "races": [
+          "576be0926b8cf8f03e1a1703"
+        ],
+        "ratings": [],
+        "location": {
+          "long": 5.575727199999999,
+          "lat": 51.2740201,
+          "address": {
+            "city": "Budel"
+          }
+        }
+      },
+      "visited": false
+    },
+    {
+      "bar": {
+        "_id": "576bac4a6feb96a02f47c210",
+        "available": true,
+        "google_id": "ChIJE4hG1b4rx0cRruJky4-_uCw",
+        "name": "Café Quincy",
+        "__v": 0,
+        "races": [
+          "576be0926b8cf8f03e1a1703"
+        ],
+        "ratings": [],
+        "location": {
+          "long": 5.574822,
+          "lat": 51.27478439999999,
+          "address": {
+            "city": " Budel",
+            "street": "Markt 25"
+          }
+        }
+      },
+      "visited": false
+    },
+    {
+      "bar": {
+        "_id": "576bac4a6feb96a02f47c211",
+        "available": true,
+        "google_id": "ChIJL9IBLLkrx0cREaF4ClOiDXA",
+        "name": "City Bar",
+        "__v": 0,
+        "races": [
+          "576be0926b8cf8f03e1a1703"
+        ],
+        "ratings": [],
+        "location": {
+          "long": 5.574284899999999,
+          "lat": 51.27456639999999,
+          "address": {
+            "city": " Budel",
+            "street": "Markt 19"
+          }
+        }
+      },
+      "visited": false
+    },
+    {
+      "bar": {
+        "_id": "576bac4a6feb96a02f47c213",
+        "available": true,
+        "google_id": "ChIJe9pgzr4rx0cRm4i9JRE6TXQ",
+        "name": "Helmi's Kafee",
+        "__v": 0,
+        "races": [
+          "576be0926b8cf8f03e1a1703"
+        ],
+        "ratings": [],
+        "location": {
+          "long": 5.5750887,
+          "lat": 51.2739956,
+          "address": {
+            "city": " Budel",
+            "street": "Capucijnerplein 10"
+          }
+        }
+      },
+      "visited": false
+    },
+    {
+      "bar": {
+        "_id": "576bac4a6feb96a02f47c215",
+        "available": true,
+        "google_id": "ChIJ4Suu4L4rx0cR33_vA1mGssg",
+        "name": "Proost",
+        "__v": 0,
+        "races": [
+          "576be0926b8cf8f03e1a1703"
+        ],
+        "ratings": [],
+        "location": {
+          "long": 5.5763934,
+          "lat": 51.274458,
+          "address": {
+            "city": " Budel",
+            "street": " Deken van Baarsstraat 1"
+          }
+        }
+      },
+      "visited": false
+    }
+  ],
+  "participants": []
+}
+                    </pre>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -268,16 +422,26 @@ bars: [
                     <td>:id = [string]</td>
                 </tr>
                 <tr>
-                    <th>Query Params</th>
-                    <td></td>
-                </tr>
-                <tr>
                     <th>Data Params</th>
-                    <td></td>
+                    <td>n/a</td>
                 </tr>
                 <tr>
                     <th>Success Response</th>
-                    <td></td>
+                    <td>
+                    <pre>
+        [
+            {
+                "_id": "570716cfc781a99b654768b3",
+                "created_at": "2016-04-08T02:26:24.045Z",
+                "updated_at": "2016-04-08T02:26:46.479Z",
+                "role": "user",
+                "age": "1993-11-15T00:00:00.000Z",
+                "name": "Ralf Hendriks",
+                "__v": 0,
+            },
+        ]
+                    </pre>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -293,7 +457,7 @@ bars: [
                 </tr>
                 <tr>
                     <th>Method</th>
-                    <td>PUT</td>
+                    <td>POST</td>
                 </tr>
                 <tr>
                     <th>URL Params</th>
@@ -305,11 +469,25 @@ bars: [
                 </tr>
                 <tr>
                     <th>Data Params</th>
-                    <td></td>
+                    <td>
+                    <pre>
+                    {
+                        "users": [570716cfc781a99b654768b3,5702c4981adb13154894face]
+                    }
+                    </pre>
+                    </td>
                 </tr>
                 <tr>
                     <th>Success Response</th>
-                    <td></td>
+                    <td>
+                        Participants added.
+                    </td>
+                </tr>
+                <tr>
+                    <th>Error Response</th>
+                    <td>
+                        Invalid participant in array! [userID]
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -321,7 +499,7 @@ bars: [
                 <tbody>
                 <tr>
                     <th>URL</th>
-                    <td>/races/:id/participants</td>
+                    <td>/races/:id/participants/:userid</td>
                 </tr>
                 <tr>
                     <th>Method</th>
@@ -329,31 +507,37 @@ bars: [
                 </tr>
                 <tr>
                     <th>URL Params</th>
-                    <td>:id = [string]</td>
+                    <td>:id = [string], :userid = [string]</td>
                 </tr>
                 <tr>
                     <th>Query Params</th>
-                    <td></td>
+                    <td>n/a</td>
                 </tr>
                 <tr>
                     <th>Data Params</th>
-                    <td></td>
+                    <td>n/a</td>
                 </tr>
                 <tr>
                     <th>Success Response</th>
-                    <td></td>
+                    <td>Participant removed.</td>
+                </tr>
+                                <tr>
+                    <th>Error Response</th>
+                    <td>
+                        No valid participant.
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
 
-        <h3 id="getParticipant">Get participant</h3>
+       <h3 id="removeParticipants">Get bars</h3>
         <div class="span10"><br/>
             <table class="table table-hover">
                 <tbody>
                 <tr>
                     <th>URL</th>
-                    <td>/races/:id/participants/:userid</td>
+                    <td>/races/:id/bars/</td>
                 </tr>
                 <tr>
                     <th>Method</th>
@@ -361,19 +545,187 @@ bars: [
                 </tr>
                 <tr>
                     <th>URL Params</th>
-                    <td>:id = [string]<br />:userid = [string]</td>
+                    <td>:id = [string]</td>
                 </tr>
                 <tr>
                     <th>Query Params</th>
-                    <td></td>
+                    <td>n/a</td>
                 </tr>
                 <tr>
                     <th>Data Params</th>
-                    <td></td>
+                    <td>n/a</td>
                 </tr>
                 <tr>
                     <th>Success Response</th>
-                    <td></td>
+                    <td>
+                    <pre>
+    {
+    "_id": "576be0926b8cf8f03e1a1703",
+    "created_at": "2016-06-23T13:13:54.638Z",
+    "updated_at": "2016-06-23T13:13:54.638Z",
+    "raceLeader": {
+        "_id": "5702c4981adb13154894face",
+        "created_at": "2016-04-04T19:46:32.797Z",
+        "updated_at": "2016-04-07T14:55:41.129Z",
+        "role": "admin",
+        "age": "1993-11-15T00:00:00.000Z",
+        "name": "Ralf Hendriks",
+    },
+    "name": "race Budel Yeah",
+    "__v": 0,
+    "bars": [
+        {
+        "bar": {
+            "_id": "576bac4a6feb96a02f47c20d",
+            "available": true,
+            "google_id": "ChIJa7kh374rx0cR_s7gRiLxO9c",
+            "name": "De Bonte Os - eetcafé & zaal",
+            "__v": 0,
+            "races": [
+            "576be0926b8cf8f03e1a1703"
+            ],
+            "ratings": [],
+            "location": {
+            "long": 5.576281900000001,
+            "lat": 51.2746131,
+            "address": {
+                "city": " Budel",
+                "street": "Doctor Ant. Mathijsenstraat 12"
+            }
+            }
+        },
+        "visited": false
+        },
+        {
+        "bar": {
+            "_id": "576bac4a6feb96a02f47c20f",
+            "available": true,
+            "google_id": "ChIJPdxVxL4rx0cRHOLz17bkgzE",
+            "name": "Cambrinus Bar",
+            "__v": 0,
+            "races": [
+            "576be0926b8cf8f03e1a1703"
+            ],
+            "ratings": [],
+            "location": {
+            "long": 5.575727199999999,
+            "lat": 51.2740201,
+            "address": {
+                "city": "Budel"
+            }
+            }
+        },
+        "visited": false
+        },
+        {
+        "bar": {
+            "_id": "576bac4a6feb96a02f47c210",
+            "available": true,
+            "google_id": "ChIJE4hG1b4rx0cRruJky4-_uCw",
+            "name": "Café Quincy",
+            "__v": 0,
+            "races": [
+            "576be0926b8cf8f03e1a1703"
+            ],
+            "ratings": [],
+            "location": {
+            "long": 5.574822,
+            "lat": 51.27478439999999,
+            "address": {
+                "city": " Budel",
+                "street": "Markt 25"
+            }
+            }
+        },
+        "visited": false
+        },
+        {
+        "bar": {
+            "_id": "576bac4a6feb96a02f47c211",
+            "available": true,
+            "google_id": "ChIJL9IBLLkrx0cREaF4ClOiDXA",
+            "name": "City Bar",
+            "__v": 0,
+            "races": [
+            "576be0926b8cf8f03e1a1703"
+            ],
+            "ratings": [],
+            "location": {
+            "long": 5.574284899999999,
+            "lat": 51.27456639999999,
+            "address": {
+                "city": " Budel",
+                "street": "Markt 19"
+            }
+            }
+        },
+        "visited": false
+        },
+        {
+        "bar": {
+            "_id": "576bac4a6feb96a02f47c213",
+            "available": true,
+            "google_id": "ChIJe9pgzr4rx0cRm4i9JRE6TXQ",
+            "name": "Helmi's Kafee",
+            "__v": 0,
+            "races": [
+            "576be0926b8cf8f03e1a1703"
+            ],
+            "ratings": [],
+            "location": {
+            "long": 5.5750887,
+            "lat": 51.2739956,
+            "address": {
+                "city": " Budel",
+                "street": "Capucijnerplein 10"
+            }
+            }
+        },
+        "visited": false
+        },
+        {
+        "bar": {
+            "_id": "576bac4a6feb96a02f47c20c",
+            "available": true,
+            "google_id": "ChIJT0XDHMArx0cRe3_pxnWu5G4",
+            "name": "Café Zaal De Bellevue",
+            "__v": 0,
+            "races": [
+            "576be0926b8cf8f03e1a1703"
+            ],
+            "ratings": [],
+            "location": {
+            "long": 5.581622299999998,
+            "lat": 51.2778522,
+            "address": {
+                "city": " Budel",
+                "street": "Maarheezerweg 1"
+            }
+            }
+        },
+        "visited": false
+        }
+    ],
+    "participants": [
+        {
+        "_id": "570716cfc781a99b654768b3",
+        "created_at": "2016-04-08T02:26:24.045Z",
+        "updated_at": "2016-04-08T02:26:46.479Z",
+        "role": "user",
+        "age": "1993-11-15T00:00:00.000Z",
+        "name": "Ralf Hendriks",
+        "__v": 0,
+        },
+    ]
+    }
+                    </pre>
+                    </td>
+                </tr>
+                                <tr>
+                    <th>Error Response</th>
+                    <td>
+                        "Invalid Id"
+                    </td>
                 </tr>
                 </tbody>
             </table>

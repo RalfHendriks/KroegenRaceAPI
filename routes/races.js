@@ -247,14 +247,14 @@ function addUser(req,res){
     }
 
     items.forEach(function(item) {
-        Race.find({participants: item}, function (err,result) {
+        Race.findOne({_id:req.params.id,participants:item }, function (err,result) {
             if(err != undefined){
                 error = err;
                 unkownparticipants.push(item);
             }
             else{
-                if(result[0] == undefined){
-                    Race.update(query,{$push: {participants: item } },function (err) {
+                if(result == undefined){
+                    Race.update(query,{$push: {participants: item } },function (err,result) {
                         if(err)
                         console.log(err);
                     });
@@ -283,7 +283,7 @@ function removeUser(req,res){
             res.json('Participant removed.');
         }
         else{
-            res.json('No valid participants.');
+            res.json('No valid participant.');
         }
     });
 }
