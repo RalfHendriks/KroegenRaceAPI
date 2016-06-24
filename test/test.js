@@ -118,23 +118,7 @@ describe('Routing', function(){
                 done()
             });
     });
-
-    it('Should_ReturnRaceParticipants_When_OpeningSingleRaceParticipants', function(done){
-
-        server
-            .get('/races/576be0926b8cf8f03e1a1703/participants')
-            .set('Content-Type','application/json')
-            .expect(200)
-            .expect('Content-Type', /json/)
-            .end(function(err, res){
-                if (err) return done(err);
-
-                expect(res.body).to.not.be.empty;
-                expect(res.body[0]).to.have.property('_id');
-                expect(res.body[0]._id).to.be.a('String');
-                done()
-            });
-    });
+    
 
     it('Should_ReturnRaceBars_When_OpeningSingleRaceBars', function(done){
 
@@ -249,40 +233,8 @@ describe('Races', function(){
             });
     });
 
-    it('Should_ReturnTrue_When_RemovingRaceParticipant', function(done){
 
-        server
-            .del('/races/576be0926b8cf8f03e1a1703/participants/570716cfc781a99b654768b3')
-            .expect(200)
-            .expect('Content-Type', /json/)
-            .end(function(err, res){
-                if (err) return done(err);
 
-                expect(res.body).to.equal('Participant removed.');
-
-                done()
-            });
-    });
-
-    it('Should_ReturnTrue_When_AddingRaceParticipant', function(done){
-
-        var body = {
-            users: ["570716cfc781a99b654768b3"]
-        };
-
-        server
-            .post('/races/576be0926b8cf8f03e1a1703/participants')
-            .send(body)
-            .expect(200)
-            .expect('Content-Type', /json/)
-            .end(function(err, res){
-                if (err) return done(err);
-
-                expect(res.body).to.equal('Participants added.');
-
-                done()
-            });
-    });
 
     it('Should_ReturnTrue_When_RemovingRaceBar', function(done){
 
