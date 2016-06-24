@@ -25,6 +25,10 @@ module.exports = function(passport) {
         res.render('home', { userPermission: auth.validAction(req.user) });
     });
 
+    router.get('/docs', function(req, res) {
+        res.render('doc', {userPermission: auth.validAction(req.user) });
+    });
+
     router.post('/login', passport.authenticate('local-login', {
 		successRedirect : '/home', // redirect to the secure profile section
 		failureRedirect : '/login', // redirect back to the signup page if there is an error

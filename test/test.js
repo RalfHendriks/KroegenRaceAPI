@@ -36,7 +36,6 @@ function logoutUser() {
 };
 
 // Tests
-//Should_ThrowException_When_AgeLessThan18
 describe('Authentication', function(){
     it('Should_RedirectHome_When_Login', loginUser());
 
@@ -80,17 +79,19 @@ describe('Routing', function(){
             });
     });
 
-    it('Should_ReturnOK_When_OpeningRaces', function(done){
+    it('Should_ReturnOK_When_OpeningSingleRace', function(done){
         server
-            .get('/')
+            .get('/races/fakeid')
             .set('Accept', 'application/json')
             .expect(200)
             .expect('Content-Type', /json/)
             .end(function(err, res){
                 if (err) return done(err);
-                done()
+                done(res)
             });
     });
+
+
 });
 
 

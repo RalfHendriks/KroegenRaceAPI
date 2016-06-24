@@ -1,0 +1,423 @@
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+</head>
+<body class="container">
+    <header>
+        <% include ../partials/header %>
+    </header>
+    <div class="jumbotron">
+        <h1><span class="fa fa-lock"></span> API Documentation</h1>
+
+        <p>Table of contents:</p>
+        <ul>
+            <li>
+                <a href="#races">Races</a>
+                <ul>
+                    <li><a href="#getAllRaces">Get all races</a></li>
+                    <li><a href="#createRace">Create race</a></li>
+                    <li><a href="#getRace">Get race</a></li>
+                    <li><a href="#removeRace">Remove race</a></li>
+                    <li><a href="#updateRace">Update race</a></li>
+                    <li><a href="#getParticipants">Get participants</a></li>
+                    <li><a href="#addParticipants">Add participants</a></li>
+                    <li><a href="#removeParticipants">Remove participants</a></li>
+                    <li><a href="#getParticipant">Get participant</a></li>
+                </ul>
+            </li>
+        </ul>
+
+    </div>
+    <div>
+        <h2 id="races">Races</h2>
+
+        <h3 id="getAllRaces">Get all races</h3>
+        <div class="span10">
+            <table class="table table-hover">
+                <tbody>
+                    <tr>
+                        <th>URL</th>
+                        <td>/races</td>
+                    </tr>
+                    <tr>
+                        <th>Method</th>
+                        <td>GET</td>
+                    </tr>
+                    <tr>
+                        <th>URL Params</th>
+                        <td>n/a</td>
+                    </tr>
+                    <tr>
+                        <th>Data Params</th>
+                        <td>n/a</td>
+                    </tr>
+                    <tr>
+                        <th>Success Response</th>
+                        <td>
+                            <pre>
+[
+    {
+        "_id": "576be0926b8cf8f03e1a1703",
+        "created_at": "2016-06-23T13:13:54.638Z",
+        "updated_at": "2016-06-23T13:13:54.638Z",
+        "raceLeader": "5702c4981adb13154894face",
+        "name": "race Budel Yeah",
+        "__v": 0,
+        "bars": [
+            {
+                "bar": {
+                    "_id": "576bac4a6feb96a02f47c20c",
+                    "available": true,
+                    "google_id": "ChIJT0XDHMArx0cRe3_pxnWu5G4",
+                    "name": "Café Zaal De Bellevue",
+                    "__v": 0,
+                    "races": [
+                        "576be0926b8cf8f03e1a1703"
+                    ],
+                    "ratings": [],
+                    "location": {
+                        "long": 5.581622299999998,
+                        "lat": 51.2778522,
+                        "address": {
+                            "city": " Budel",
+                            "street": "Maarheezerweg 1"
+                        }
+                    }
+                },
+                "visited": false
+            },
+        ],
+        "participants": [
+            {
+                "_id": "570690b952d7c3ea87f66b87",
+                "created_at": "2016-04-07T16:54:17.562Z",
+                "updated_at": "2016-04-07T16:54:17.562Z",
+                "role": "user",
+                "age": "1993-11-15T00:00:00.000Z",
+                "name": "Ralf Hendriks",
+                "__v": 0,
+                "local": {
+                    "password": "$2a$08$YySCau/mcOQVFHA4.LSIUec.7efEWR/p3naIT69uZvvkVjcICDUU.",
+                    "email": "rjhendri@avans.nl"
+                }
+            }
+        ]
+    }
+]
+                            </pre></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="createRace">Create Race</h3>
+        <div class="span10">
+            <table class="table table-hover">
+                <tbody>
+                <tr>
+                    <th>URL</th>
+                    <td>/races</td>
+                </tr>
+                <tr>
+                    <th>Method</th>
+                    <td>POST</td>
+                </tr>
+                <tr>
+                    <th>URL Params</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Data Params</th>
+                    <td>
+                        <pre>
+name: [string],
+created_at: [date],
+updated_at: [date],
+raceLeader: [User],
+participants: [
+    [User]
+],
+bars: [
+    {
+        _id:false,
+        bar: [Bar],
+        visited: [boolean],
+    },
+]
+                        </pre>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Success Response</th>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="getRace">Get race</h3>
+        <div class="span10"><br/>
+            <table class="table table-hover">
+                <tbody>
+                <tr>
+                    <th>URL</th>
+                    <td>/races/:id</td>
+                </tr>
+                <tr>
+                    <th>Method</th>
+                    <td>GET</td>
+                </tr>
+                <tr>
+                    <th>URL Params</th>
+                    <td>:id = [string]</td>
+                </tr>
+                <tr>
+                    <th>Query Params</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Data Params</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Success Response</th>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="removeRace">Remove race</h3>
+        <div class="span10"><br/>
+            <table class="table table-hover">
+                <tbody>
+                <tr>
+                    <th>URL</th>
+                    <td>/races/:id</td>
+                </tr>
+                <tr>
+                    <th>Method</th>
+                    <td>REMOVE</td>
+                </tr>
+                <tr>
+                    <th>URL Params</th>
+                    <td>:id = [string]</td>
+                </tr>
+                <tr>
+                    <th>Query Params</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Data Params</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Success Response</th>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="updateRace">Update race</h3>
+        <div class="span10"><br/>
+            <table class="table table-hover">
+                <tbody>
+                <tr>
+                    <th>URL</th>
+                    <td>/races/:id</td>
+                </tr>
+                <tr>
+                    <th>Method</th>
+                    <td>PUT</td>
+                </tr>
+                <tr>
+                    <th>URL Params</th>
+                    <td>:id = [string]</td>
+                </tr>
+                <tr>
+                    <th>Query Params</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Data Params</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Success Response</th>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="getParticipants">Get participants</h3>
+        <div class="span10"><br/>
+            <table class="table table-hover">
+                <tbody>
+                <tr>
+                    <th>URL</th>
+                    <td>/races/:id/participants</td>
+                </tr>
+                <tr>
+                    <th>Method</th>
+                    <td>GET</td>
+                </tr>
+                <tr>
+                    <th>URL Params</th>
+                    <td>:id = [string]</td>
+                </tr>
+                <tr>
+                    <th>Query Params</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Data Params</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Success Response</th>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="addParticipants">Add participants</h3>
+        <div class="span10"><br/>
+            <table class="table table-hover">
+                <tbody>
+                <tr>
+                    <th>URL</th>
+                    <td>/races/:id/participants</td>
+                </tr>
+                <tr>
+                    <th>Method</th>
+                    <td>PUT</td>
+                </tr>
+                <tr>
+                    <th>URL Params</th>
+                    <td>:id = [string]</td>
+                </tr>
+                <tr>
+                    <th>Query Params</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Data Params</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Success Response</th>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="removeParticipants">Remove participants</h3>
+        <div class="span10"><br/>
+            <table class="table table-hover">
+                <tbody>
+                <tr>
+                    <th>URL</th>
+                    <td>/races/:id/participants</td>
+                </tr>
+                <tr>
+                    <th>Method</th>
+                    <td>REMOVE</td>
+                </tr>
+                <tr>
+                    <th>URL Params</th>
+                    <td>:id = [string]</td>
+                </tr>
+                <tr>
+                    <th>Query Params</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Data Params</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Success Response</th>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="getParticipant">Get participant</h3>
+        <div class="span10"><br/>
+            <table class="table table-hover">
+                <tbody>
+                <tr>
+                    <th>URL</th>
+                    <td>/races/:id/participants/:userid</td>
+                </tr>
+                <tr>
+                    <th>Method</th>
+                    <td>GET</td>
+                </tr>
+                <tr>
+                    <th>URL Params</th>
+                    <td>:id = [string]<br />:userid = [string]</td>
+                </tr>
+                <tr>
+                    <th>Query Params</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Data Params</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Success Response</th>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+</body>
+</html>
+
+
+<!--
+
+<div class="span10"><br/>
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <th>URL</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>Method</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>URL Params</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>Query Params</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>Data Params</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>Success Response</th>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+-->

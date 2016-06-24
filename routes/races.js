@@ -79,7 +79,7 @@ function renderPage(type, data,target,permission,res){
         case 'text/html':
                 if(permission == '1'){
                         console.log(data);
-                    res.render(target, {data: data,userPermission: permission });  
+                    res.render(target, {data: data,userPermission: permission });
                 }
                 else{
                     res.json('Permission denied!');
