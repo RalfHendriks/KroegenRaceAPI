@@ -267,7 +267,7 @@ describe('Races', function(){
     it('Should_ReturnTrue_When_AddingRaceParticipant', function(done){
 
         var body = {
-            users: ['570716cfc781a99b654768b3']
+            users: ["570716cfc781a99b654768b3"]
         };
 
         server
@@ -293,8 +293,7 @@ describe('Races', function(){
             .end(function(err, res){
                 if (err) return done(err);
 
-                console.log(res.body);
-                //expect(res.body).to.equal('Participant removed.');
+                expect(res.body).to.equal('Bar removed.');
 
                 done()
             });
