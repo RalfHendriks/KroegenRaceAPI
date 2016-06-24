@@ -13,6 +13,7 @@ var session  = require('express-session');
 var config = require('./config')();
 var ConnectRoles = require('connect-roles');
 var mongoose = require('mongoose');
+var socket_io = require('socket.io');
 
 // Mongoose
 mongoose.connect(config.mlab.host);
@@ -45,6 +46,10 @@ var users = require('./routes/users')(User);
 require('./config/passport')(passport,User);
 
 var app = express();
+
+// Socket.io
+var io = socket_io();
+app.io = io;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views/pages'));
