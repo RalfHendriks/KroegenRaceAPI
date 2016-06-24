@@ -146,7 +146,6 @@ describe('Routing', function(){
             .end(function(err, res){
                 if (err) return done(err);
 
-                console.log(res.body);
                 expect(res.body).to.not.be.empty;
                 expect(res.body[0].bar).to.have.property('_id');
                 expect(res.body[0].bar.location).to.not.be.empty;
@@ -159,10 +158,10 @@ describe('Routing', function(){
 
 describe('Races', function(){
 
-    it('Should_ReturnRaceBars_When_AddingRace', function(done){
+    it('Should_ReturnRaceBars_When_AddingRaceWithVisited', function(done){
 
         var body = {
-            name: 'Test Race',
+            name: 'Test Race With Bar',
             created_at: new Date(),
             updated_at: new Date(),
             raceLeader: '570716cfc781a99b654768b3',
@@ -205,6 +204,140 @@ describe('Races', function(){
                 done()
             });
     });
+
+    it('Should_ReturnRaceBars_When_AddingRaceWithoutVisited', function(done){
+
+        var body = {
+            name: 'Test Race Without Bars',
+            created_at: new Date(),
+            updated_at: new Date(),
+            raceLeader: '570716cfc781a99b654768b3',
+            participants: [
+                '570716cfc781a99b654768b3'
+            ],
+            bars: [
+                {
+                    "available": true,
+                    "google_id": "ChIJT0XDHMArx0cRe3_pxnWu5G4",
+                    "name": "Café Zaal De Bellevue",
+                    "_id": "576bac4a6feb96a02f47c20c",
+                    "ratings": [],
+                    "location": {
+                        "long": 5.581622299999998,
+                        "lat": 51.2778522,
+                        "address": {
+                            "city": " Budel",
+                            "street": "Maarheezerweg 1"
+                        }
+                    }
+                }
+            ]
+        };
+
+        server
+            .post('/races')
+            .send(body)
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function(err, res){
+                if (err) return done(err);
+
+                expect(res.body).to.not.be.empty;
+                expect(res.body).to.have.property('_id');
+
+                done()
+            });
+    });
+
+    it('Should_ReturnTrue_When_RemovingRaceParticipant', function(done){
+
+        server
+            .del('/races/576be0926b8cf8f03e1a1703/participants/570716cfc781a99b654768b3')
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function(err, res){
+                if (err) return done(err);
+
+                expect(res.body).to.equal('Participant removed.');
+
+                done()
+            });
+    });
+
+    it('Should_ReturnTrue_When_AddingRaceParticipant', function(done){
+
+        var body = {
+            users: ['570716cfc781a99b654768b3']
+        };
+
+        server
+            .post('/races/576be0926b8cf8f03e1a1703/participants')
+            .send(body)
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function(err, res){
+                if (err) return done(err);
+
+                expect(res.body).to.equal('Participants added.');
+
+                done()
+            });
+    });
+
+    it('Should_ReturnTrue_When_RemovingRaceBar', function(done){
+
+        server
+            .del('/races/576be0926b8cf8f03e1a1703/bars/576bac4a6feb96a02f47c20c')
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function(err, res){
+                if (err) return done(err);
+
+                console.log(res.body);
+                //expect(res.body).to.equal('Participant removed.');
+
+                done()
+            });
+    });
+
+
+    it('Should_ReturnTrue_When_AddingRaceBar', function(done){
+
+        var body = {
+            bars: [
+                {
+                    "available": true,
+                    "google_id": "ChIJT0XDHMArx0cRe3_pxnWu5G4",
+                    "name": "Café Zaal De Bellevue",
+                    "_id": "576bac4a6feb96a02f47c20c",
+                    "ratings": [],
+                    "location": {
+                        "long": 5.581622299999998,
+                        "lat": 51.2778522,
+                        "address": {
+                            "city": " Budel",
+                            "street": "Maarheezerweg 1"
+                        }
+                    }
+                }
+            ]
+        };
+
+        server
+            .post('/races/576be0926b8cf8f03e1a1703/bars')
+            .send(body)
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function(err, res){
+                if (err) return done(err);
+
+                expect(res.body).to.equal('Bars added.');
+
+                done()
+            });
+    });
+
+
 
 });
 
