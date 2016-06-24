@@ -12,8 +12,12 @@ module.exports = function(passport) {
     
     // locally --------------------------------
     router.get('/login', function(req, res) {
-        console.log(req.get('Content-Type'));
-        res.render('login', { message: req.flash('loginMessage'), userPermission: auth.validAction(req.user) });
+        if(req.user != undefined){
+            res.redirect('/home');
+        }
+        else{
+            res.render('login', { message: req.flash('loginMessage'), userPermission: auth.validAction(req.user) });
+        }
     });
     
     router.get('/logout',function(req,res){
@@ -36,7 +40,12 @@ module.exports = function(passport) {
 	}));
     
     router.get('/signup', function(req, res) {
-        res.render('signup', { message: req.flash('signupMessage'), userPermission: auth.validAction(req.user) });
+        if(req.user != undefined){
+            res.redirect('/home');
+        }
+        else{
+            res.render('signup', { message: req.flash('signupMessage'), userPermission: auth.validAction(req.user) });
+        }   
     });
 
     router.post('/signup', passport.authenticate('local-signup', {
