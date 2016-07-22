@@ -4,15 +4,18 @@ module.exports = function(mongoose){
             type: String,
             required: true,
             min: 2,
-            max: 20
+            max: 25
         },
         created_at: Date,
         updated_at: Date,
-        raceLeader: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        raceleader: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
         bars: [{ _id:false,
-                 bar: {type: mongoose.Schema.Types.ObjectId, ref: 'Bar'},
-                 visited: {type: Boolean, default:false, required: true},
+                 google_id: {
+                    type: String,
+                    required: true
+                },
+                 visited_participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
                 },{id: false}],
     });
    

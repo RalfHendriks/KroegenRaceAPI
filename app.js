@@ -35,12 +35,11 @@ var user = new ConnectRoles({
 
 var User = require('./models/user')(mongoose,bcrypt);
 var Race = require('./models/race')(mongoose);
-var Bar  = require('./models/bar')(mongoose);
 
 var routes = require('./routes/index')(passport);
-var bars = require('./routes/bars')(Bar);
-var races = require('./routes/races')(Race,Bar);
-var users = require('./routes/users')(User);
+//var bars = require('./routes/bars')(Bar);
+//var races = require('./routes/races')(Race,Bar);
+//var users = require('./routes/users')(User);
 
 
 require('./config/passport')(passport,User);
@@ -77,9 +76,9 @@ app.use(user.middleware());
 app.use(flash());
 
 app.use('/', routes);
-app.use('/races', races);
+/*app.use('/races', races);
 app.use('/users', users);
-app.use('/bars', bars);
+app.use('/bars', bars);*/
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
