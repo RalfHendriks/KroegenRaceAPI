@@ -32,11 +32,13 @@ var user = new ConnectRoles({
   }
 });
 
+var authController = require('./controllers/auth');
 
 var User = require('./models/user')(mongoose,bcrypt);
 var Race = require('./models/race')(mongoose);
 
 var routes = require('./routes/index')(passport);
+var Auth = require('./routes/auth')(authController,passport);
 //var bars = require('./routes/bars')(Bar);
 //var races = require('./routes/races')(Race,Bar);
 //var users = require('./routes/users')(User);
@@ -76,6 +78,7 @@ app.use(user.middleware());
 app.use(flash());
 
 app.use('/', routes);
+app.use('/auth',Auth);
 /*app.use('/races', races);
 app.use('/users', users);
 app.use('/bars', bars);*/
