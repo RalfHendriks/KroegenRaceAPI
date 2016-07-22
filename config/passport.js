@@ -117,7 +117,7 @@ module.exports = function(passport,user) {
         process.nextTick(function() {  
             // check if the user is already logged in
             if (!req.user) {
-
+                        console.log('r');
                 User.findOne({ 'facebook.id' : profile.id }, function(err, user) {
                     if (err)
                         return done(err);
@@ -218,12 +218,14 @@ module.exports = function(passport,user) {
                         return done(null, user);
                     } else {
                         var newUser          = new User();
-
+                        newUser.name = profile.displayName;
+                        newUser.role = 'user';
                         newUser.google.id    = profile.id;
                         newUser.google.token = token;
                         newUser.google.name  = profile.displayName;
                         newUser.google.email = profile.emails[0].value; // pull the first email
-
+                        
+                        console.log(newUser);
                         newUser.save(function(err) {
                             if (err)
                                 throw err;

@@ -11,34 +11,34 @@ var Bar;
 router.route('/')
     .get(getRaces)
     .post(addRace);
-
-router.route('/create')
-    .get(createRace);
     
 router.route('/:id')
     .get(getRace)
-    .delete()
-    .put();
+    .delete(removeRace)
+    .put(updateRace);
     
 router.route('/:id/participants')
     .get(getParticipants)
-    .put()
-    .post(addUser)
-    .delete();
+    .post(addUser);
 
 router.route('/:id/participants/:userid')
-    .get()
     .delete(removeUser);
 
 router.route('/:id/bars/')
     .get(getBars)
-    .post(addBar)
-    .delete();
+    .post(addBar);
     
 router.route('/:id/bars/:barid')
-    .get()
-    .put(checkIn)
+    .get(getBar)
+    .put(editBar)
     .delete(removeBar);
+    
+router.route('/:id/bars/:barid/visitors')
+    .get(getVisitedParticipants)
+    .post(addVisitor);
+    
+router.route('/:id/bars/:barid/visitors/:userid')
+    .delete(removeVisitor);
  
 module.exports = function(race,bar) {
     Race = race;

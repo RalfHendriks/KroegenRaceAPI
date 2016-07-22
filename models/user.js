@@ -12,7 +12,6 @@ module.exports = function(mongoose,bcrypt){
             required: true,
             enum: ['admin', 'user']
         },
-        age: Date,
         created_at: Date,
         updated_at: Date,
         local            : {
