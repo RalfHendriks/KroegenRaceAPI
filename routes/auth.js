@@ -31,7 +31,7 @@ module.exports = function(authController,passport) {
         .get();
         
     router.route('/facebook/callback')
-        .get();
-
+        .get();  
+          
     return router;
 };
