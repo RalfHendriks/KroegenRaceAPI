@@ -27,6 +27,5 @@ router.route('/facebook/callback')
 
 
 module.exports = function() {
-
     return router;
 };

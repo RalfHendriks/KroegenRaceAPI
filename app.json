@@ -1,6 +1,6 @@
 {
-  "name": "Kroegen race",
-  "description": "A barebones Node.js app using Express 4",
+  "name": "Kroegen Race API",
+  "description": "Kroegen Race API",
   "repository": "https://github.com/RalfHendriks/KroegenRaceAPI/",
   "logo": "http://node-js-sample.herokuapp.com/node.svg",
   "keywords": ["node", "express", "static"],

@@ -20,8 +20,6 @@ mongoose.connect(config.mlab.host);
 
 var user = new ConnectRoles({
   failureHandler: function (req, res, action) {
-    // optional function to customise code that runs when
-    // user fails authorisation
     var accept = req.headers.accept || '';
     res.status(403);
     if (~accept.indexOf('html')) {
@@ -32,14 +30,18 @@ var user = new ConnectRoles({
   }
 });
 
-
+// Models
 var User = require('./models/user')(mongoose,bcrypt);
 var Race = require('./models/race')(mongoose);
 
+// Controllers
+var userController = require('./controllers/user')(User);
+var raceController = require('./controllers/race')(Race);
+
+// Routes
 var routes = require('./routes/index')(passport);
-//var bars = require('./routes/bars')(Bar);
-//var races = require('./routes/races')(Race,Bar);
-//var users = require('./routes/users')(User);
+var races = require('./routes/races')(raceController);
+var users = require('./routes/users')(userController);
 
 
 require('./config/passport')(passport,User);
@@ -76,9 +78,8 @@ app.use(user.middleware());
 app.use(flash());
 
 app.use('/', routes);
-/*app.use('/races', races);
+app.use('/races', races);
 app.use('/users', users);
-app.use('/bars', bars);*/
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
