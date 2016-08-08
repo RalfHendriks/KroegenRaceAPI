@@ -37,12 +37,16 @@ var Race = require('./models/race')(mongoose);
 // Controllers
 var userController = require('./controllers/user')(User);
 var raceController = require('./controllers/race')(Race);
+var authController = require('./controllers/auth');
 
 // Routes
 var routes = require('./routes/index')(passport);
+var Auth = require('./routes/auth')(authController,passport);
 var races = require('./routes/races')(raceController);
 var users = require('./routes/users')(userController);
-
+//var bars = require('./routes/bars')(Bar);
+//var races = require('./routes/races')(Race,Bar);
+//var users = require('./routes/users')(User);
 
 require('./config/passport')(passport,User);
 
@@ -78,6 +82,7 @@ app.use(user.middleware());
 app.use(flash());
 
 app.use('/', routes);
+app.use('/auth',Auth);
 app.use('/races', races);
 app.use('/users', users);
 
