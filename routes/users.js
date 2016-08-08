@@ -1,53 +1,14 @@
 var express = require('express');
 var router = express.Router();
-var authorization = require('../config/authorization');
-var auth = new authorization();
-var User;
 
-
-module.exports = function(user) {
-    User = user;
-    return router;
-};
+module.exports = function(userController) {
 
     router.route('/')
-        .get(getUsers)
-        .post(addUser);
-        
+        .get(userController.getUsers)
+        .post(userController.addUser);
+
     router.route('/:id')
-        .put(updateUser);
-        /*if(true){
-            var x = getUsers();
-            console.log(x);
-            res.render('userList', {users: x,userPermission: auth.validAction(req.user) });  
-        }
-        
-    });*/
+        .put(userController.editUser);
 
-function getUsers(req,res)
-{
-    var permission = auth.validAction(req.user);
-    if(permission == '1'){
-        User.find({}, function(err, users) {
-            var userMap = [];
-            users.forEach(function(user) {
-                userMap.push(user);
-            });
-            res.render('userList', {users: userMap,userPermission: permission });  
-        });
-    }
-    else{
-        res.json('Permission denied!'); 
-    }
-
-}
-
-function addUser(req,res)
-{
-    
-}
-
-function updateUser(req,res)
-{
-    
-}
+    return router;
+};
