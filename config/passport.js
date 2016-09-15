@@ -33,7 +33,6 @@ module.exports = function(passport,user) {
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
     function(req, email, password, done) {
-
 		// find a user whose email is the same as the forms email
 		// we are checking to see if the user trying to login already exists
         if(req.body.password != req.body.repeatpassword)
@@ -81,7 +80,7 @@ module.exports = function(passport,user) {
     function(req, email, password, done) { // callback with email and password from our form
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
-        console.log('reached');
+        console.log(req.get('Content-Type'));
         User.findOne({ 'local.email' :  email }, function(err, user) {
             // if there are any errors, return the error before anything else
             if (err)
@@ -93,7 +92,6 @@ module.exports = function(passport,user) {
             if (!user.validPassword(password))
                 return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
             // all is well, return successful user
-            console.log(user);
             return done(null, user);
         });
 
@@ -148,10 +146,10 @@ module.exports = function(passport,user) {
                         newUser.facebook.name  = name;
                         newUser.facebook.email = profile.emails[0].value;
                         newUser.created_at = new Date();
-                        newUser.admin = false;
+                        newUser.role = 'user';
                         newUser.save(function(err) {
                             if (err)
-                                throw err;
+                                console.log(err);
                             return done(null, newUser);
                         });
                     }

@@ -14,6 +14,7 @@ var config = require('./config')();
 var ConnectRoles = require('connect-roles');
 var mongoose = require('mongoose');
 var socket_io = require('socket.io');
+var auth = require('./controllers/auth');
 
 // Mongoose
 mongoose.connect(config.mlab.host);
@@ -37,10 +38,10 @@ var Race = require('./models/race')(mongoose);
 // Controllers
 var userController = require('./controllers/user')(User);
 var raceController = require('./controllers/race')(Race);
-var authController = require('./controllers/auth');
+var authController = new auth(User);
 
 // Routes
-var routes = require('./routes/index')(passport);
+var routes = require('./routes/index')(authController);
 var Auth = require('./routes/auth')(authController,passport);
 var races = require('./routes/races')(raceController);
 var users = require('./routes/users')(userController);
@@ -70,7 +71,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(function (req, res, next) {
       res.setHeader("Access-Control-Allow-Origin", "*");
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-      res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+      res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type");
       res.setHeader('Access-Control-Allow-Credentials', true);
       next();
 });
