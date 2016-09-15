@@ -15,7 +15,7 @@ module.exports = function(authController,passport) {
             function(req,res,next){
                 if(req.get('Content-Type') == 'application/json'){
                     console.log('json call');
-                    authController.getUserObject(req,res);
+                    authController.renderUserObject(req,res);
                 }
                 else{
                     res.render('home', {userPermission: authController.getUserRole(req)});
