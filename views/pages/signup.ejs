@@ -9,13 +9,12 @@
                     <% include ../partials/header %>
                 </header>
                 <div class="col-sm-6 col-sm-offset-3"><br/>
-
                     <% if (message.length > 0) { %>
                         <div class="alert alert-danger"><%= message %></div>
                     <% } %>
 
                     <!-- LOGIN FORM -->
-                    <form action="/signup" method="post">
+                    <form action="/auth/signup" method="post">
                         <div class="form-group">
                             <label>Name</label>
                             <input type="text" class="form-control" name="name">

@@ -1,22 +1,84 @@
+var User;
+var Self;
 
-module.exports = {
-    
-  logout: function login(req,res,next) {
+module.exports = function(user){
+  //init controller properties
+  User = user;
+  Self = this;
+  
+  this.login = function(req,res,next){
+     res.render('login', { message: req.flash('loginMessage'), userPermission: Self.getUserRole(req)});
+  };
+
+  this.signup = function(req,res,next){
+    res.render('signup', { message: req.flash('signupMessage'), userPermission: Self.getUserRole(req) });
+  }; 
+
+  this.home = function (req,res,next){
+    console.log('d');
+    res.render('home', {userPermission: req.mydate.permission});
+  };
+
+  this.logout = function(req,res,next) {
     req.session.destroy();
     res.redirect('/'); 
-  }, 
+  }; 
 
-  isLoggedIn: function(req,res,next) {
-    var loggedUser = req.user;
+  this.getUserObject = function(req,res,next){
+    var userResponse = req.user.toObject();
+    delete userResponse["google"];
+    delete userResponse["facebook"];
+    delete userResponse.local.password;
+    return userResponse;
+  };
+
+  this.renderUserObject = function(req,res,next){
+        var userResponse = req.user.toObject();
+        delete userResponse["google"];
+        delete userResponse["facebook"];
+        delete userResponse.local.password;
+        res.json(userResponse);
+  };
+
+  this.getUserRole = function(req,res,next){
+    if(req.user == undefined)
+      return 'visitor';
+    else
+      return req.user.role;
+  };
+
+  this.renderUserRole = function(req,res,next){
+      if(req.user == undefined)
+        res.json('visitor');
+      else
+        res.json(req.user.role);
+  };
+
+  this.isLoggedIn = function(req,res,next) {
     if(req.user == undefined){
         res.status(403).send('Forbidden');
     }
     else{
         return true;
     }
-  },
+  };
 
-  hasNeededPermission: function(req,res,next){
-      var permissions = req.user.role;
-  }
+  this.hasAcces = function(req,res,next){
+    try {
+          if(req.user == undefined){
+        res.status(403).send('Forbidden');
+    }
+    else{
+        return true;
+    }
+    } catch (error) {
+      console.log(error);
+    }
+
+  };
+
+  /*this.hasAcces = function(req,res,next){
+      return 'hello';
+  };*/
+
 };
