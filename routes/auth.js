@@ -6,23 +6,17 @@ module.exports = function(authController,passport) {
     //middelware that runs before all other functions
     //router.use(authController.getUserRole);
 
-    router.route('/home')
-        .get(authController.isLoggedIn,authController.home);
-
     router.route('/login')
         .get(authController.login)
-        .post(passport.authenticate('local-login', {failureFlash : true}),
+        .post(passport.authenticate('local-login', {failureFlash : true }),
             function(req,res,next){
-                if(req.get('Content-Type') == 'application/json'){
-                    console.log('json call');
-                    authController.renderUserObject(req,res);
-                }
-                else{
-                    res.render('home', {userPermission: authController.getUserRole(req)});
-                }
+                console.log('valid!');
+                console.log(error);
+                authController.proccessValidLogin(req,res);
             },
              function(error,req,res,next){
                  console.log(error);
+                 authController.proccessInvalidLogin(req,res);
              }
         );
  

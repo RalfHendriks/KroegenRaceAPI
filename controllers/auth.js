@@ -14,15 +14,26 @@ module.exports = function(user){
     res.render('signup', { message: req.flash('signupMessage'), userPermission: Self.getUserRole(req) });
   }; 
 
-  this.home = function (req,res,next){
-    console.log('d');
-    res.render('home', {userPermission: req.mydate.permission});
-  };
-
   this.logout = function(req,res,next) {
     req.session.destroy();
     res.redirect('/'); 
-  }; 
+  };
+
+  this.proccessValidLogin = function(req,res,next){
+    if(req.get('Content-Type') == 'application/json')
+        Self.renderUserObject(req,res);
+    else
+        res.render('home', {userPermission: Self.getUserRole(req)});
+  };
+
+  this.proccessInvalidLogin = function(req,res,next){
+      if(req.get('Content-Type') == 'application/json')
+        res.json('Invalid password');
+      else{
+        console.log('redirect!!');
+                res.redirect('/auth/login');
+      }
+  };
 
   this.getUserObject = function(req,res,next){
     var userResponse = req.user.toObject();
