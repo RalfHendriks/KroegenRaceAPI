@@ -1,5 +1,5 @@
 var async = require('async');
-var googlePlaces = require('node-googleplaces');
+var GooglePlaces = require('googleplaces');
 var config = require('../config/index')();
 var controller = {};
 
@@ -63,14 +63,26 @@ module.exports = function(Race) {
             },
             function(race, callback) {
                 // Add Google Places data
-                var places = new googlePlaces(config.googleplaces.key);
+                var places = new GooglePlaces(config.googleplaces.key, config.googleplaces.outputFormat);
                 var bars = [];
 
                 async.each(race.bars, function(selectedBar, cb) {
                     var query = {};
                     query.placeid = selectedBar.google_id;
 
-                    places.details(query, function(err, res) {
+                    places.placeSearch(query, function (error, response) {
+                        if (error) throw error;
+                        places.placeDetailsRequest({reference: response.results[0].reference}, function (error, response) {
+                            if (error) throw error;
+                            console.log(response);
+                        });
+                    });
+                   /* places.details(query, function(err, res) {
+                        console.log("==========");
+                        console.log(err);
+                        console.log("----------");
+                        console.log(res);
+                        console.log("==========");
                         if(err) return res.json(err);
 
                         selectedBar = selectedBar.toObject();
@@ -81,7 +93,8 @@ module.exports = function(Race) {
 
                         console.log(selectedBar);
                         cb();
-                    });
+                    });*/
+                    cb();
 
                 }, function(err) {
                     if(err) return res.json(err);

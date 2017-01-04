@@ -2,7 +2,7 @@ var config = module.exports = {};
 
 config.googleplaces = {
     key: 'AIzaSyD3PUPRq9aJRVeCXaIJo2_FDb6mEAxTSWE',
-    baseurl: 'https://maps.googleapis.com/maps/api/place/nearbysearch/'
+    outputFormat: 'json'
 };
 
 config.facebookAuth = {
