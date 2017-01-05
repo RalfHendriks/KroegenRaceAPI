@@ -96,7 +96,7 @@ module.exports = function(Race, User) {
      * @param res
      */
     controller.editRace = function(req, res) {
-        /*var query = {};
+        var query = {};
 
         if (req.params.id) {
             query._id = req.params.id;
@@ -105,20 +105,16 @@ module.exports = function(Race, User) {
         Race.findOne(query, function (err, race){
             if(err) return res.json(err);
 
-            if (!race) {
-                res.status(404);
-                return res.json({error: 'race not found'});
-            }
+            if (!race)
+                return res.status(404).json({error: 'race not found'});
 
-            if(req.body.name) race.name = req.body.name;
-
-            race.save(function(err, data){
+            Race.update(query, req.body, function(err, race) {
                 if(err) return res.json(err);
 
-                res.json(data);
+                res.json(race);
             });
-        });*/
 
+        });
     };
 
     return controller;

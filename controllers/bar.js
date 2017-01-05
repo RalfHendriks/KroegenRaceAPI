@@ -1,5 +1,5 @@
-var async = require('async');
 var _ = require('underscore');
+var async = require('async');
 var googlePlaces = require('node-googleplaces');
 var config = require('../config/index')();
 var controller = {};
@@ -202,7 +202,47 @@ module.exports = function(Race, User) {
     };
 
     controller.editBar = function(req, res) {
-        console.log('editBar');
+        var query = {};
+
+        if (req.params.id) {
+            query._id = req.params.id;
+        }
+
+        // Find race
+        Race.findOne(query, function (err, race) {
+            if(err) return res.json(err);
+
+            // Check if race exist
+            if(!race)
+                return res.status(400).json({error: 'race not found'});
+
+            // Check if google id is set
+            if(!req.body.google_id)
+                return res.status(400).json({error: 'google id is required'});
+
+            // Check if bar exists
+            var barindex = _.indexOf(race.bars, _.findWhere(race.bars, {
+                "google_id" : req.params.barid 
+            }));
+
+            if(barindex === -1)
+                return res.status(400).json({error: 'bar not found'});
+
+            // Replace google_id
+            if(req.body.google_id)
+                race.bars[barindex].google_id = req.body.google_id;
+
+            // Replace visited participants
+            if(req.body.google_id)
+                race.bars[barindex].visited_participants = req.body.visited_participants;
+
+            Race.update(query, race, function(err, race) {
+                if(err) return res.json(err);
+
+                res.json(race);
+            });
+
+        });
     };
 
     /**

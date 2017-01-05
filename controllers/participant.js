@@ -1,4 +1,3 @@
-var _ = require('underscore');
 var controller = {};
 
 module.exports = function(Race, User) {
@@ -41,7 +40,7 @@ module.exports = function(Race, User) {
             query._id = req.params.id;
         }
 
-        // find race
+        // Find race
         Race.findOne(query, function (err, race) {
             if(err) return res.json(err);
 
@@ -55,7 +54,7 @@ module.exports = function(Race, User) {
 
             // Find user
             var query = {};
-            query._id = req.body.id;
+            query._id = req.body.userid;
             User.findOne(query, function (err, user) {
                 if(err) return res.json(err);
 

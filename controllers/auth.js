@@ -49,7 +49,7 @@ module.exports = function(user){
         delete userResponse["facebook"];
         delete userResponse.local.password;
         res.json(userResponse);
-  };
+  }; 
 
   this.getUserRole = function(req,res,next){
     if(req.user == undefined)
