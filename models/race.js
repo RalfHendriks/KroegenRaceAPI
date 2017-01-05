@@ -1,5 +1,6 @@
 module.exports = function(mongoose){
     var raceSchema = new mongoose.Schema({
+        id: false,
         name: {
             type: String,
             required: true,
@@ -9,7 +10,7 @@ module.exports = function(mongoose){
         created_at: Date,
         updated_at: Date,
         raceleader: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-        participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+        participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
         bars: [{ _id:false,
                  google_id: {
                     type: String,
@@ -17,6 +18,17 @@ module.exports = function(mongoose){
                 },
                  visited_participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
                 },{id: false}],
+    }, {
+        toObject: {virtuals: true},
+        toJSON: {virtuals: true}
+    });
+
+    raceSchema.virtual('amount_bars').get(function () {
+        return this.bars.length;
+    });
+
+    raceSchema.virtual('amount_participants').get(function () {
+        return this.participants.length;
     });
    
     raceSchema.pre('save', function(next) {

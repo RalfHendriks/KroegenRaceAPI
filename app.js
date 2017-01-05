@@ -37,17 +37,17 @@ var Race = require('./models/race')(mongoose);
 
 // Controllers
 var userController = require('./controllers/user')(User);
-var raceController = require('./controllers/race')(Race);
+var raceController = require('./controllers/race')(Race, User);
+var participantController = require('./controllers/participant')(Race, User);
+var barController = require('./controllers/bar')(Race, User);
+var visitorController = require('./controllers/visitor')(Race, User);
 var authController = new auth(User);
 
 // Routes
 var routes = require('./routes/index')(authController);
 var Auth = require('./routes/auth')(authController,passport);
-var races = require('./routes/races')(raceController);
+var races = require('./routes/races')(raceController, participantController, barController, visitorController);
 var users = require('./routes/users')(userController);
-//var bars = require('./routes/bars')(Bar);
-//var races = require('./routes/races')(Race,Bar);
-//var users = require('./routes/users')(User);
 
 require('./config/passport')(passport,User);
 

@@ -2,25 +2,20 @@ var controller = {};
 
 module.exports = function(User) {
 
+    /**
+     * Get Users
+     * @param req
+     * @param res
+     */
+    // Todo: Paging
     controller.getUsers = function(req, res) {
-        /*var query = {};
+        var query = {};
 
-        User.find(query)
-            .exec(function (error, data) {
-                // error, dispatch it
-                if (error) return next(error);
+        User.find(query, function (err, data){
+            if(err) return res.json(err);
 
-                if (req.params.id) {
-                    if (data.length != 0) {
-                        data = data[0];
-                    } else {
-                        res.status(404);
-                        return res.json({error: 'user not found'});
-                    }
-                }
-
-                res.json(data);
-            });*/
+            res.json(data);
+        });
     };
 
     controller.addUser = function(req, res) {
@@ -38,10 +33,36 @@ module.exports = function(User) {
         /*newUser.save(function(err,newUser) {
          res.json(newUser);
          });*/
+
+        res.json({"error" : "Not implemented yey"});
+    };
+
+    /**
+     * Get Single User
+     * @param req
+     * @param res
+     */
+    controller.getUser = function(req, res) {
+        var query = {};
+
+        if (req.params.id) {
+            query._id = req.params.id;
+        }
+
+        // Find user
+        User.findOne(query, function (err, user){
+            if(err) return res.json(err);
+
+            // Check if user exist
+            if(!user)
+                return res.status(400).json({error: 'user not found'});
+
+            return res.json(user);
+        });
     };
 
     controller.editUser = function() {
-        console.log('editUser');
+        res.json({"error" : "Not implemented yey"});
     };
 
     return controller;

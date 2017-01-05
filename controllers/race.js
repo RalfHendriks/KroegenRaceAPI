@@ -1,10 +1,14 @@
-var async = require('async');
-var googlePlaces = require('node-googleplaces');
-var config = require('../config/index')();
+var _ = require('underscore');
 var controller = {};
 
-module.exports = function(Race) {
+module.exports = function(Race, User) {
 
+    /**
+     * Get Races
+     * @param req
+     * @param res
+     */
+    // Todo: Paging
     controller.getRaces = function(req, res) {
         var query = {};
 
@@ -15,29 +19,27 @@ module.exports = function(Race) {
         });
     };
 
+    /**
+     * Add Race
+     * @param req
+     * @param res
+     * @returns {*}
+     */
     controller.addRace = function(req, res) {
+        if(!req.body.name)
+            return res.status(400).json({error: 'name is required'});
+
+        if(!req.body.raceleader)
+            return res.status(400).json({error: 'raceleader is required'});
+
+        if(!req.body.bars)
+            return res.status(400).json({error: 'bars is required'});
+
+        if(req.body.bars.length === 0)
+            return res.status(400).json({error: 'bars array is empty'});
+
+
         var newRace = new Race(req.body);
-
-        if(!req.body.name) {
-            res.status(400);
-            return res.json({error: 'name is required'});
-        }
-
-        if(!req.body.raceleader) {
-            res.status(400);
-            return res.json({error: 'raceleader is required'});
-        }
-
-        if(!req.body.bars) {
-            res.status(400);
-            return res.json({error: 'bars is required'});
-        }
-
-        if(req.body.bars.length === 0) {
-            res.status(400);
-            return res.json({error: 'bars array is empty'});
-        }
-
         newRace.save(function(err, data){
             if(err) return res.json(err);
 
@@ -45,6 +47,11 @@ module.exports = function(Race) {
         });
     };
 
+    /**
+     * Get Single Race
+     * @param req
+     * @param res
+     */
     controller.getRace = function(req, res) {
         var query = {};
 
@@ -52,54 +59,23 @@ module.exports = function(Race) {
             query._id = req.params.id;
         }
 
-        async.waterfall([
-            function(callback) {
-                // First get Race from DB
-                Race.findOne(query, function (err, race){
-                    if(err) return res.json(err);
-
-                    callback(null, race);
-                });
-            },
-            function(race, callback) {
-                // Add Google Places data
-                var places = new googlePlaces(config.googleplaces.key);
-                var bars = [];
-
-                async.each(race.bars, function(selectedBar, cb) {
-                    var query = {};
-                    query.placeid = selectedBar.google_id;
-
-                    places.details(query, function(err, res) {
-                        if(err) return res.json(err);
-
-                        selectedBar = selectedBar.toObject();
-                        selectedBar.bar = res.body;
-
-
-                        bars.push(selectedBar);
-
-                        console.log(selectedBar);
-                        cb();
-                    });
-
-                }, function(err) {
-                    if(err) return res.json(err);
-
-                    //console.log(bars);
-                    race.bars = bars;
-                    callback(null, race);
-                });
-
-            }
-        ], function (err, result) {
+        // Find race
+        Race.findOne(query, function (err, race){
             if(err) return res.json(err);
 
-            return res.json(result);
-        });
+            // Check if race exist
+            if(!race)
+                return res.status(400).json({error: 'race not found'});
 
+            return res.json(race);
+        });
     };
 
+    /**
+     * Remove Race
+     * @param req
+     * @param res
+     */
     controller.removeRace = function(req, res) {
         var query = {};
 
@@ -114,52 +90,35 @@ module.exports = function(Race) {
         });
     };
 
-    controller.editRace = function() {
-        console.log('updateRace');
-    };
+    /**
+     * Edit Race
+     * @param req
+     * @param res
+     */
+    controller.editRace = function(req, res) {
+        /*var query = {};
 
-    controller.getParticipants = function() {
-        console.log('getParticipants');
-    };
+        if (req.params.id) {
+            query._id = req.params.id;
+        }
 
-    controller.addParticipant = function() {
-        console.log('addParticipant');
-    };
+        Race.findOne(query, function (err, race){
+            if(err) return res.json(err);
 
-    controller.removeParticipant = function() {
-        console.log('removeParticipant');
-    };
+            if (!race) {
+                res.status(404);
+                return res.json({error: 'race not found'});
+            }
 
-    controller.getBars = function() {
-        console.log('getBars');
-    };
+            if(req.body.name) race.name = req.body.name;
 
-    controller.addBar = function() {
-        console.log('addBar');
-    };
+            race.save(function(err, data){
+                if(err) return res.json(err);
 
-    controller.getBar = function() {
-        console.log('getBar');
-    };
+                res.json(data);
+            });
+        });*/
 
-    controller.editBar = function() {
-        console.log('editBar');
-    };
-
-    controller.removeBar = function() {
-        console.log('removeBar');
-    };
-
-    controller.getVisitedParticipants = function() {
-        console.log('getVisitedParticipants');
-    };
-
-    controller.addVisitor = function() {
-        console.log('addVisitor');
-    };
-
-    controller.removeVisitor = function() {
-        console.log('removeVisitor');
     };
 
     return controller;
