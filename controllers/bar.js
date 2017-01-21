@@ -4,7 +4,7 @@ var googlePlaces = require('node-googleplaces');
 var config = require('../config/index')();
 var controller = {};
 
-module.exports = function(Race, User) {
+module.exports = function(pageHelper, Race, User) {
 
     /**
      * Get Bars from specific race

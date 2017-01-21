@@ -1,21 +1,37 @@
 var _ = require('underscore');
 var controller = {};
 
-module.exports = function(Race, User) {
+module.exports = function(pageHelper, Race, User) {
 
     /**
      * Get Races
      * @param req
      * @param res
      */
-    // Todo: Paging
     controller.getRaces = function(req, res) {
         var query = {};
+        var skip = req.query.page > 0 ? (parseFloat(req.query.page) - 1) : 0;
+        var sort = req.query.sort ? req.query.sort : 'created_at';
 
-        Race.find(query, function (err, data){
+        // Set filter options
+        if(req.query.name != undefined)
+            query.name = new RegExp(req.query.name, 'i');
+
+        Race.find(query)
+        .limit(10)
+        .skip(skip * 10)
+        .sort(sort)
+        .exec(function (err, data){
             if(err) return res.json(err);
 
-            res.json(data);
+            // Get total items
+            var pages = 0;
+            Race.count(query, function(err, count) {
+                if(err) return res.json(err);
+
+                pages = Math.ceil(count / 10);
+                pageHelper.renderPage(req, res, 'race', data, pages);
+            });
         });
     };
 
@@ -60,14 +76,17 @@ module.exports = function(Race, User) {
         }
 
         // Find race
-        Race.findOne(query, function (err, race){
+        Race.findOne(query)
+            .populate('raceleader')
+            .populate('participants')
+            .exec(function (err, race){
             if(err) return res.json(err);
 
             // Check if race exist
             if(!race)
                 return res.status(400).json({error: 'race not found'});
 
-            return res.json(race);
+            pageHelper.renderPage(req, res, 'race_detail', race);
         });
     };
 

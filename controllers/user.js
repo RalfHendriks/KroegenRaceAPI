@@ -1,20 +1,39 @@
 var controller = {};
 
-module.exports = function(User) {
+module.exports = function(pageHelper, User) {
 
     /**
      * Get Users
      * @param req
      * @param res
      */
-    // Todo: Paging
     controller.getUsers = function(req, res) {
         var query = {};
+        var skip = req.query.page > 0 ? (parseFloat(req.query.page) - 1) : 0;
+        var sort = req.query.sort ? req.query.sort : 'name';
 
-        User.find(query, function (err, data){
+        // Set filter options
+        if(req.query.name != undefined)
+            query.name = new RegExp(req.query.name, 'i');
+
+        if(req.query.role != undefined)
+            query.role = new RegExp(req.query.role, 'i');
+
+        User.find(query)
+        .limit(10)
+        .skip(skip * 10)
+        .sort(sort)
+        .exec(function (err, data){
             if(err) return res.json(err);
 
-            res.json(data);
+            // Get total items
+            var pages = 0;
+            User.count(query, function(err, count) {
+                if(err) return res.json(err);
+
+                pages = Math.ceil(count / 10);
+                pageHelper.renderPage(req, res, 'user', data, pages);
+            });
         });
     };
 
@@ -57,7 +76,7 @@ module.exports = function(User) {
             if(!user)
                 return res.status(400).json({error: 'user not found'});
 
-            return res.json(user);
+            pageHelper.renderPage(req, res, 'user_detail', user);
         });
     };
 

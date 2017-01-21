@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+</head>
+<body class="container">
+    <header>
+        <% include ../partials/header %>
+    </header>
+    <div class="jumbotron">
+        <h1><span class="fa fa-lock"></span> Race <a href="/races" class="btn btn-primary"><span class="fa fa-user"></span>Back to overview</a></h1>
+        <p><%= data.name %></p>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Race information</h2>
+            <table class="table table-hover">
+                <tr>
+                    <th>ID: </th>
+                    <td><%= data._id %></td>
+                </tr>
+                <tr>
+                    <th>Name: </th>
+                    <td><%= data.name %></td>
+                </tr>
+                <tr>
+                    <th>Created At: </th>
+                    <td><%= data.created_at.toISOString().replace(/T/, ' ').replace(/\..+/, '') %></td>
+                </tr>
+                <tr>
+                    <th>Updated At: </th>
+                    <td><%= data.updated_at.toISOString().replace(/T/, ' ').replace(/\..+/, '') %></td>
+                </tr>
+                <tr>
+                    <th>Race Leader: </th>
+                    <td><a href="/users/<%= data.raceleader._id %>"><%= data.raceleader.name %></a></td>
+                </tr>
+                <tr>
+                    <th>Winner: </th>
+                    <td><% if(data.has_winner) { %><a href="/users/<%= data.has_winner._id %>"><%= data.has_winner.name %></a><% } %></td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-4">
+            <h2>Bars</h2>
+            <div class="list-group">
+                <% for(var i=0; i < data.bars.length; i++) { %>
+                <a href="/races/<%= data._id %>/:barid" class="list-group-item"><%= data.bars[i].bar %></a>
+                <% } %>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Participants</h2>
+            <table class="table table-hover">
+                <tr>
+                    <th>Name: </th>
+                    <th>Progress: </th>
+                </tr>
+                <% for(var i=0; i < data.participants.length; i++) { %>
+                <tr>
+                    <td><a href="/users/<%= data.participants[i]._id %>"><%= data.participants[i].name %></a></td>
+                    <td>
+                        <% var count = 0; %>
+                        <% for(var j=0; j < data.bars.length; j++) {
+                            if(data.bars[j].visited_participants.indexOf(data.participants[i]._id) != -1)
+                                count++;
+                        } %>
+                        <% var percent = (count / data.bars.length * 100); %>
+                        <div class="progress">
+                            <div class="progress-bar <% if(percent === 100) {%>progress-bar-success<% } %>" role="progressbar" aria-valuenow="<%= percent %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= percent %>%;">
+                                <%= count %>/<%= data.bars.length %>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <% } %>
+            </table>
+        </div>
+    </div>
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+</body>
+</html>

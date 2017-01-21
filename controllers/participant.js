@@ -1,6 +1,6 @@
 var controller = {};
 
-module.exports = function(Race, User) {
+module.exports = function(pageHelper, Race, User) {
 
     /**
      * Get Participants of single race
@@ -24,7 +24,9 @@ module.exports = function(Race, User) {
             if(!race)
                 return res.status(400).json({error: 'race not found'});
 
-            res.json(race.participants);
+
+            pageHelper.renderPage(req, res, 'doc', race.participants);
+            //res.json(race.participants);
         });
     };
 

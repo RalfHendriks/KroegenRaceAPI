@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var controller = {};
 
-module.exports = function(Race, User) {
+module.exports = function(pageHelper, Race, User) {
 
     /**
      * Get visited participants of single race

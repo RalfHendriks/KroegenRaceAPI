@@ -35,17 +35,22 @@ var user = new ConnectRoles({
 var User = require('./models/user')(mongoose,bcrypt);
 var Race = require('./models/race')(mongoose);
 
-// Controllers
-var userController = require('./controllers/user')(User);
-var raceController = require('./controllers/race')(Race, User);
-var participantController = require('./controllers/participant')(Race, User);
-var barController = require('./controllers/bar')(Race, User);
-var visitorController = require('./controllers/visitor')(Race, User);
+// Auth
 var authController = new auth(User);
+
+// Helpers
+var pageHelper = require('./helpers/page')(authController);
+
+// Controllers
+var userController = require('./controllers/user')(pageHelper, User);
+var raceController = require('./controllers/race')(pageHelper, Race, User);
+var participantController = require('./controllers/participant')(pageHelper, Race, User);
+var barController = require('./controllers/bar')(pageHelper, Race, User);
+var visitorController = require('./controllers/visitor')(pageHelper, Race, User);
 
 // Routes
 var routes = require('./routes/index')(authController);
-var Auth = require('./routes/auth')(authController,passport);
+var auth = require('./routes/auth')(authController,passport);
 var races = require('./routes/races')(raceController, participantController, barController, visitorController);
 var users = require('./routes/users')(userController);
 
@@ -60,7 +65,6 @@ app.io = io;
 // view engine setup
 app.set('views', path.join(__dirname, 'views/pages'));
 app.set('view engine', 'ejs');
-// uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(morgan('dev'));
 app.use(bodyParser.json());
@@ -83,7 +87,7 @@ app.use(user.middleware());
 app.use(flash());
 
 app.use('/', routes);
-app.use('/auth',Auth);
+app.use('/auth',auth);
 app.use('/races', races);
 app.use('/users', users);
 
