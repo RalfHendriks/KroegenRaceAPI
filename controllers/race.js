@@ -1,7 +1,8 @@
 var _ = require('underscore');
 var controller = {};
+var async = require('async');
 
-module.exports = function(pageHelper, Race, User) {
+module.exports = function(pageHelper, barHelper, Race, User) {
 
     /**
      * Get Races
@@ -75,18 +76,27 @@ module.exports = function(pageHelper, Race, User) {
             query._id = req.params.id;
         }
 
-        // Find race
-        Race.findOne(query)
-            .populate('raceleader')
-            .populate('participants')
-            .exec(function (err, race){
+        async.waterfall([
+            function(callback) {
+                // Find Race
+                Race.findOne(query)
+                .populate('raceleader')
+                .populate('participants')
+                .exec(function (err, race){
+                    if(err) return res.json(err);
+
+                    // Check if race exist
+                    if(!race)
+                        return res.status(400).json({error: 'race not found'});
+
+                    callback(null, race);
+                });
+            },
+            barHelper.parseGooglePlaces
+        ], function (err, result) {
             if(err) return res.json(err);
 
-            // Check if race exist
-            if(!race)
-                return res.status(400).json({error: 'race not found'});
-
-            pageHelper.renderPage(req, res, 'race_detail', race);
+            pageHelper.renderPage(req, res, 'race_detail', result);
         });
     };
 
@@ -105,7 +115,7 @@ module.exports = function(pageHelper, Race, User) {
         Race.findOneAndRemove(query, function (err){
             if(err) return res.json(err);
 
-            res.json({message: 'the race has been removed'});
+            res.json({status: 'OK', message: 'the race has been removed'});
         });
     };
 

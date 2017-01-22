@@ -1,4 +1,5 @@
 var helper = {};
+var _ = require('underscore');
 
 module.exports = function(authController) {
 
@@ -32,14 +33,20 @@ module.exports = function(authController) {
             pages = 0;
 
         if(this.getHeaderType(req) === 'application/json') {
-            res.json(data); // Simple return JSON
+            var returnJson = {
+                currentPage: (req.query.page > 0 ? parseFloat(req.query.page) : 1),
+                pages: pages,
+                data: data
+            };
+            res.json(returnJson);
         } else {
             var htmlData = {
                 userPermission: authController.getUserRole(req, res),
                 data: data,
                 currentPage: (req.query.page > 0 ? parseFloat(req.query.page) : 1),
                 pages: pages,
-                req: req
+                req: req,
+                _: _ // Include underscore to view
             }
             res.render(page, htmlData);
         }

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+    <script type="text/javascript" src="/scripts/admin-race.js"></script>
+    <script type="text/javascript" src="/scripts/admin.js"></script>
+</head>
+<body class="container">
+    <header>
+        <% include ../partials/header %>
+    </header>
+    <div class="jumbotron">
+        <h1><span class="fa fa-lock"></span> Admin</h1>
+        <p>Manage all races and users.</p>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Races <a href="#addRace" class="btn btn-primary"><span class="fa fa-user"></span>Add race</a></h2>
+            <div id="race-data" class="list-group">
+
+            </div>
+            <div id="race-pagination" class="btn-toolbar" role="toolbar" aria-label="...">
+
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h2>Users <a href="#addUser" class="btn btn-primary"><span class="fa fa-user"></span>Add user</a></h2>
+            <div id="user-data" class="list-group">
+
+            </div>
+            <div id="user-pagination" class="btn-toolbar" role="toolbar" aria-label="...">
+
+            </div>
+        </div>
+    </div>
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+
+    <% include ../modals/race_edit_modal %>
+    <% include ../modals/race_participants_modal %>
+    <% include ../modals/race_bars_modal %>
+    <% include ../modals/race_delete_modal %>
+
+</body>
+</html>

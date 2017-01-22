@@ -45,7 +45,7 @@
             <h2>Bars</h2>
             <div class="list-group">
                 <% for(var i=0; i < data.bars.length; i++) { %>
-                <a href="/races/<%= data._id %>/:barid" class="list-group-item"><%= data.bars[i].bar %></a>
+                <a href="/races/<%= data._id %>/bars/<%= data.bars[i].google_id %>" class="list-group-item"><%= data.bars[i].bar.name %></a>
                 <% } %>
             </div>
         </div>
@@ -64,7 +64,7 @@
                     <td>
                         <% var count = 0; %>
                         <% for(var j=0; j < data.bars.length; j++) {
-                            if(data.bars[j].visited_participants.indexOf(data.participants[i]._id) != -1)
+                            if(_.contains(data.bars[j].visited_participants, data.participants[i]._id))
                                 count++;
                         } %>
                         <% var percent = (count / data.bars.length * 100); %>

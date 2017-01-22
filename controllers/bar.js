@@ -4,7 +4,7 @@ var googlePlaces = require('node-googleplaces');
 var config = require('../config/index')();
 var controller = {};
 
-module.exports = function(pageHelper, Race, User) {
+module.exports = function(pageHelper, barHelper, Race, User) {
 
     /**
      * Get Bars from specific race
@@ -31,37 +31,7 @@ module.exports = function(pageHelper, Race, User) {
                     callback(null, race);
                 });
             },
-            function(race, callback) {
-                var places = new googlePlaces(config.googleplaces.key);
-                var bars = [];
-
-                // Loop through bars in race
-                async.each(race.bars, function(selectedBar, cb) {
-                    var query = {};
-                    query.placeid = selectedBar.google_id;
-
-                    // Get data from Google Places
-                    places.details(query, function(err, res) {
-                        if(err) return res.json(err);
-
-                        // Add extra Google Places data to return object
-                        selectedBar = selectedBar.toObject();
-                        selectedBar.bar = res.body.result;
-
-                        bars.push(selectedBar);
-                        cb();
-                    });
-
-                }, function(err) {
-                    if(err) return res.json(err);
-
-                    // Assign new object to return
-                    race = race.toObject();
-                    race.bars = bars;
-                    callback(null, race);
-                });
-
-            }
+            barHelper.parseGooglePlaces
         ], function (err, result) {
             if(err) return res.json(err);
 
@@ -142,62 +112,30 @@ module.exports = function(pageHelper, Race, User) {
                     if(!race)
                         return res.status(400).json({error: 'race not found'});
 
+                    // Check if google id exists in array
+                    var exists = false;
+                    var bar;
+                    race.bars.forEach(function(item, index) {
+                        if(item.google_id === req.params.barid) {
+                            exists = true;
+                            bar = race.bars[index];
+                        }
+                    });
+
+                    if(!exists)
+                        return res.status(400).json({error: 'bar not found'});
+
+                    race.bars = [];
+                    race.bars.push(bar);
+
                     callback(null, race);
                 });
             },
-            function(race, callback) {
-
-                var places = new googlePlaces(config.googleplaces.key);
-                var bars = [];
-
-                // Check if google id exists in array
-                var exists = false;
-                var bar;
-                race.bars.forEach(function(item, index) {
-                    if(item.google_id === req.params.barid) {
-                        exists = true;
-                        bar = race.bars[index];
-                    }
-                });
-
-                if(!exists)
-                    return res.status(400).json({error: 'bar not found'});
-
-                // Empty bars and only add the right one
-                race.bars = [];
-                race.bars.push(bar);
-
-                // Loop through bars in race
-                async.each(race.bars, function(selectedBar, cb) {
-                    var query = {};
-                    query.placeid = selectedBar.google_id;
-
-                    // Get data from Google Places
-                    places.details(query, function(err, res) {
-                        if(err) return res.json(err);
-
-                        // Add extra Google Places data to return object
-                        selectedBar = selectedBar.toObject();
-                        selectedBar.bar = res.body.result;
-
-                        bars.push(selectedBar);
-                        cb();
-                    });
-
-                }, function(err) {
-                    if(err) return res.json(err);
-
-                    // Assign new object to return
-                    race = race.toObject();
-                    race.bars = bars;
-                    callback(null, race);
-                });
-
-            }
+            barHelper.parseGooglePlaces
         ], function (err, result) {
             if(err) return res.json(err);
 
-            return res.json(result.bars[0]);
+            pageHelper.renderPage(req, res, 'bar_detail', result.bars[0]);
         });
     };
 

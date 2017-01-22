@@ -21,6 +21,10 @@ module.exports = function(auth) {
         res.render('doc', {userPermission: auth.getUserRole(req,res) });
     });
 
+    router.get('/admin', function(req, res) {
+        res.render('admin', {userPermission: auth.getUserRole(req,res) });
+    });
+
     /*
         router.post('/login', passport.authenticate('local-login', {
             successRedirect : '/home', // redirect to the secure profile section

@@ -40,12 +40,13 @@ var authController = new auth(User);
 
 // Helpers
 var pageHelper = require('./helpers/page')(authController);
+var barHelper = require('./helpers/bar')();
 
 // Controllers
 var userController = require('./controllers/user')(pageHelper, User);
-var raceController = require('./controllers/race')(pageHelper, Race, User);
+var raceController = require('./controllers/race')(pageHelper, barHelper, Race, User);
 var participantController = require('./controllers/participant')(pageHelper, Race, User);
-var barController = require('./controllers/bar')(pageHelper, Race, User);
+var barController = require('./controllers/bar')(pageHelper, barHelper, Race, User);
 var visitorController = require('./controllers/visitor')(pageHelper, Race, User);
 
 // Routes

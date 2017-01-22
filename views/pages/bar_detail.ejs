@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+</head>
+<body class="container">
+    <header>
+        <% include ../partials/header %>
+    </header>
+    <div class="jumbotron">
+        <h1><span class="fa fa-lock"></span> Bar <a href="/races/<%= req.params.id %>" class="btn btn-primary"><span class="fa fa-user"></span>Back to race</a></h1>
+        <p><%= data.bar.name %></p>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Bar information</h2>
+            <table class="table table-hover">
+                <tr>
+                    <th>ID: </th>
+                    <td><%= data.google_id %></td>
+                </tr>
+                <tr>
+                    <th>Name: </th>
+                    <td><%= data.bar.name %></td>
+                </tr>
+                <tr>
+                    <th>Address: </th>
+                    <td><%= data.bar.address %></td>
+                </tr>
+                <tr>
+                    <th>Phone: </th>
+                    <td><%= data.bar.phone %></td>
+                </tr>
+                <tr>
+                    <th>Location: </th>
+                    <td><%= data.bar.location.lat %>, <%= data.bar.location.lng %></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+</body>
+</html>
