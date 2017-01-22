@@ -19,20 +19,18 @@ module.exports = function(user){
     res.redirect('/'); 
   };
 
-  this.proccessValidLogin = function(req,res,next){
+  this.proccessValidLogin = function(req ,res){
     if(req.get('Content-Type') == 'application/json')
         Self.renderUserObject(req,res);
     else
         res.render('home', {userPermission: Self.getUserRole(req)});
   };
 
-  this.proccessInvalidLogin = function(req,res,next){
-      if(req.get('Content-Type') == 'application/json')
-        res.json('Invalid password');
-      else{
-        console.log('redirect!!');
-                res.redirect('/auth/login');
-      }
+  this.proccessInvalidLogin = function(req, res){
+        if(req.get('Content-Type') == 'application/json')
+            res.json('Invalid password');
+        else
+            res.redirect('/auth/login');
   };
 
   this.getUserObject = function(req,res,next){
@@ -44,12 +42,13 @@ module.exports = function(user){
   };
 
   this.renderUserObject = function(req,res,next){
+      console.log(req.user);
         var userResponse = req.user.toObject();
         delete userResponse["google"];
         delete userResponse["facebook"];
         delete userResponse.local.password;
         res.json(userResponse);
-  };
+  }; 
 
   this.getUserRole = function(req,res,next){
     if(req.user == undefined)

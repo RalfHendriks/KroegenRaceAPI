@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+</head>
+<body class="container">
+    <header>
+        <% include ../partials/header %>
+    </header>
+    <div class="jumbotron">
+        <h1><span class="fa fa-lock"></span> User <a href="/users" class="btn btn-primary"><span class="fa fa-user"></span>Back to list</a></h1>
+        <p><%= data.name %></p>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <h2>User information</h2>
+            <table class="table table-hover">
+                <tr>
+                    <th>ID: </th>
+                    <td><%= data._id %></td>
+                </tr>
+                <tr>
+                    <th>Name: </th>
+                    <td><%= data.name %></td>
+                </tr>
+                <tr>
+                    <th>Created At: </th>
+                    <td><%= data.created_at.toISOString().replace(/T/, ' ').replace(/\..+/, '') %></td>
+                </tr>
+                <tr>
+                    <th>Updated At: </th>
+                    <td><%= data.updated_at.toISOString().replace(/T/, ' ').replace(/\..+/, '') %></td>
+                </tr>
+                <tr>
+                    <th>Role: </th>
+                    <td><%= data.role %></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+</body>
+</html>

@@ -4,7 +4,7 @@ var router = express.Router();
 module.exports = function(auth) {
     
     /* GET home page. */
-    router.get('/', function(req, res,next) {
+    router.get('/', function(req, res) {
         res.render('index', {userPermission: auth.getUserRole(req,res) });
     });
     
@@ -19,6 +19,10 @@ module.exports = function(auth) {
 
     router.get('/docs', function(req, res) {
         res.render('doc', {userPermission: auth.getUserRole(req,res) });
+    });
+
+    router.get('/admin', function(req, res) {
+        res.render('admin', {userPermission: auth.getUserRole(req,res) });
     });
 
     /*

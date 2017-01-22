@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
  
-module.exports = function(raceController) {
+module.exports = function(raceController, participantController, barController, visitorController) {
 
     router.route('/')
         .get(raceController.getRaces)
@@ -13,27 +13,27 @@ module.exports = function(raceController) {
         .put(raceController.editRace);
 
     router.route('/:id/participants')
-        .get(raceController.getParticipants)
-        .post(raceController.addParticipant);
+        .get(participantController.getParticipants)
+        .post(participantController.addParticipant);
 
     router.route('/:id/participants/:userid')
-        .delete(raceController.removeParticipant);
+        .delete(participantController.removeParticipant);
 
-    router.route('/:id/bars/')
-        .get(raceController.getBars)
-        .post(raceController.addBar);
+    router.route('/:id/bars')
+        .get(barController.getBars)
+        .post(barController.addBar);
 
     router.route('/:id/bars/:barid')
-        .get(raceController.getBar)
-        .put(raceController.editBar)
-        .delete(raceController.removeBar);
+        .get(barController.getBar)
+        .put(barController.editBar)
+        .delete(barController.removeBar);
 
     router.route('/:id/bars/:barid/visitors')
-        .get(raceController.getVisitedParticipants)
-        .post(raceController.addVisitor);
+        .get(visitorController.getVisitedParticipants)
+        .post(visitorController.addVisitor);
 
     router.route('/:id/bars/:barid/visitors/:userid')
-        .delete(raceController.removeVisitor);
+        .delete(visitorController.removeVisitor);
     
     return router;
 };

@@ -8,6 +8,7 @@ module.exports = function(userController) {
         .post(userController.addUser);
 
     router.route('/:id')
+        .get(userController.getUser)
         .put(userController.editUser);
 
     return router;

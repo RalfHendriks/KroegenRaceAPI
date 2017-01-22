@@ -1,26 +1,40 @@
 var controller = {};
 
-module.exports = function(User) {
+module.exports = function(pageHelper, User) {
 
+    /**
+     * Get Users
+     * @param req
+     * @param res
+     */
     controller.getUsers = function(req, res) {
-        /*var query = {};
+        var query = {};
+        var skip = req.query.page > 0 ? (parseFloat(req.query.page) - 1) : 0;
+        var sort = req.query.sort ? req.query.sort : 'name';
+
+        // Set filter options
+        if(req.query.name != undefined)
+            query.name = new RegExp(req.query.name, 'i');
+
+        if(req.query.role != undefined)
+            query.role = new RegExp(req.query.role, 'i');
 
         User.find(query)
-            .exec(function (error, data) {
-                // error, dispatch it
-                if (error) return next(error);
+        .limit(10)
+        .skip(skip * 10)
+        .sort(sort)
+        .exec(function (err, data){
+            if(err) return res.json(err);
 
-                if (req.params.id) {
-                    if (data.length != 0) {
-                        data = data[0];
-                    } else {
-                        res.status(404);
-                        return res.json({error: 'user not found'});
-                    }
-                }
+            // Get total items
+            var pages = 0;
+            User.count(query, function(err, count) {
+                if(err) return res.json(err);
 
-                res.json(data);
-            });*/
+                pages = Math.ceil(count / 10);
+                pageHelper.renderPage(req, res, 'user', data, pages);
+            });
+        });
     };
 
     controller.addUser = function(req, res) {
@@ -38,10 +52,36 @@ module.exports = function(User) {
         /*newUser.save(function(err,newUser) {
          res.json(newUser);
          });*/
+
+        res.json({"error" : "Not implemented yey"});
+    };
+
+    /**
+     * Get Single User
+     * @param req
+     * @param res
+     */
+    controller.getUser = function(req, res) {
+        var query = {};
+
+        if (req.params.id) {
+            query._id = req.params.id;
+        }
+
+        // Find user
+        User.findOne(query, function (err, user){
+            if(err) return res.json(err);
+
+            // Check if user exist
+            if(!user)
+                return res.status(400).json({error: 'user not found'});
+
+            pageHelper.renderPage(req, res, 'user_detail', user);
+        });
     };
 
     controller.editUser = function() {
-        console.log('editUser');
+        res.json({"error" : "Not implemented yey"});
     };
 
     return controller;

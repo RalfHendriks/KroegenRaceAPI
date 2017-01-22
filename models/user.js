@@ -10,6 +10,7 @@ module.exports = function(mongoose,bcrypt){
         role: {
             type: String,
             required: true,
+            default: 'user',
             enum: ['admin', 'user']
         },
         created_at: Date,
@@ -19,21 +20,25 @@ module.exports = function(mongoose,bcrypt){
             password     : { type: String },
         },
         facebook         : {
-            id           : String,
-            token        : String,
-            email        : String,
-            name         : String
+            id           : { type: String, select: false },
+            token        : { type: String, select: false },
+            email        : { type: String },
+            name         : { type: String }
         },
         google           : {
-            id           : String,
-            token        : String,
-            email        : String,
-            name         : String
-        }
+            id           : { type: String, select: false },
+            token        : { type: String, select: false },
+            email        : { type: String },
+            name         : { type: String }
+        } 
     });
 
     userSchema.methods.generateHash = function(password) {
         return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+    };
+
+    userSchema.methods.isAdmin = function () {
+        return this.role == 'admin';
     };
     
     // on every save, add the date

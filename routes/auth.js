@@ -3,26 +3,24 @@ var router = express.Router();
 
 module.exports = function(authController,passport) {
 
-    //middelware that runs before all other functions
-    //router.use(authController.getUserRole);
-
     router.route('/login')
         .get(authController.login)
-        .post(passport.authenticate('local-login', {failureFlash : true }),
-            function(req,res,next){
-                console.log('valid!');
-                console.log(error);
-                authController.proccessValidLogin(req,res);
-            },
-             function(error,req,res,next){
-                 console.log(error);
-                 authController.proccessInvalidLogin(req,res);
-             }
-        );
- 
+        .post(function(req, res, next) {
+            passport.authenticate('local-login', function(err, user) {
+                if (err) { return next(err); }
+
+                if (!user) {
+                    authController.proccessInvalidLogin(req, res);
+                } else {
+                    req.user = user;
+                    authController.proccessValidLogin(req, res);
+                }
+            })(req, res, next);
+        });
+
     router.route('/logout')
         .get(authController.logout);
-        
+
     router.route('/signup')
         .get(authController.signup)
         .post(passport.authenticate('local-signup', {
@@ -31,15 +29,12 @@ module.exports = function(authController,passport) {
             failureFlash : true // allow flash messages
         }));
 
-    // send to google to do the authentication
     router.route('/google')
         .get(passport.authenticate('google', { scope : ['profile', 'email'] }));
 
-    // send to facebook to do the authentication
     router.route('/facebook')
         .get(passport.authenticate('facebook', { scope : 'email' }));
 
-    // the callback after google has authenticated the user
     router.route('/google/callback')
         .get(passport.authenticate('google', {
 			successRedirect : '/home',
