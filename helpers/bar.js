@@ -23,16 +23,18 @@ module.exports = function() {
                 if(err) return res.json(err);
 
                 // Add extra Google Places data to return object
-                currentBar = currentBar.toObject();
-                var result = res.body.result;
-                currentBar.bar = {
-                    name : result.name,
-                    address : result.formatted_address,
-                    phone : result.formatted_phone_number,
-                    location : result.geometry.location
-                };
+                if(res.body.status === 'OK') {
+                    currentBar = currentBar.toObject();
+                    var result = res.body.result;
+                    currentBar.bar = {
+                        name: result.name,
+                        address: result.formatted_address,
+                        phone: result.formatted_phone_number,
+                        location: result.geometry.location
+                    };
 
-                parsedBars.push(currentBar);
+                    parsedBars.push(currentBar);
+                }
                 cb();
             });
 

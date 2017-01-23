@@ -14,7 +14,8 @@ module.exports = function(raceController, participantController, barController, 
 
     router.route('/:id/participants')
         .get(participantController.getParticipants)
-        .post(participantController.addParticipant);
+        .post(participantController.addParticipant)
+        .put(participantController.editParticipants);
 
     router.route('/:id/participants/:userid')
         .delete(participantController.removeParticipant);
