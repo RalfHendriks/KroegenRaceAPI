@@ -6,16 +6,22 @@
                 <h4 class="modal-title"><span class="race-name"></span></h4>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="raceEditForm">
                     <div class="form-group">
                         <label for="name">Name</label>
-                        <input type="text" class="form-control" id="name" placeholder="Name" value="">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="raceleader">Race leader</label>
+                        <select class="form-control" id="raceleader" name="raceleader">
+
+                        </select>
                     </div>
                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success">Edit race</button>
+                <button type="button" class="btn btn-success" id="raceEditConfirm">Edit race</button>
             </div>
         </div>
     </div>

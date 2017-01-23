@@ -1,8 +1,13 @@
 // Init 'models/controllers'
 var Race = new Race();
+var User = new User();
+
+var userList = [];
+
 
 $(function() {
 
+    User.getUsers(1, getUsersCallback);
     Race.getRaces(1, getRacesCallback);
 
     $('#race-pagination').on('click', 'a', function(e) {
@@ -21,6 +26,14 @@ $(function() {
         modal.find('.race-name').text(name);
         Race.selectedItemID = id;
         Race.getRace(Race.selectedItemID, getRaceCallback);
+    });
+
+    $('#raceEditModal').on('click', '#raceEditConfirm', function() {
+        var form = $('#raceEditForm');
+        var formData = {
+            name : form.find('#name').val()
+        };
+        Race.updateRace(Race.selectedItemID, formData, updateRaceCallback);
     });
 
     $('#raceDeleteModal').on('show.bs.modal', function (event) {
@@ -69,8 +82,21 @@ function getRacesCallback(races) {
 function getRaceCallback(race) {
     // Set modal form values
     var modal = $('#raceEditModal');
-    console.log(race);
-    //modal.find('input#name').val(race.name);
+    modal.find('input#name').val(race.name);
+
+    var option = '';
+    var selected = '';
+    for(var i = 0; i < userList.length; i++) {
+        selected = userList[i].key === race.raceleader._id ? 'selected' : '';
+        option = '<option value="' + userList[i].key + '" ' + selected + '>' + userList[i].value + '</option>';
+        modal.find('select#raceleader').append(option);
+    }
+}
+
+function updateRaceCallback(data) {
+    $('#raceEditModal').modal('hide');
+    console.log(data);
+    Race.getRaces(Race.currentPage, getRacesCallback);
 }
 
 function deleteRaceCallback(data) {
@@ -79,5 +105,20 @@ function deleteRaceCallback(data) {
         Race.getRaces(Race.currentPage, getRacesCallback);
     } else {
         alert('Oops, something went wrong.');
+    }
+}
+
+function getUsersCallback(users) {
+    parseUserList(users);
+}
+
+function parseUserList(users) {
+    userList = new Array();
+
+    for(var i = 0; i < users.length; i++) {
+        userList[i] = {
+            key: users[i]._id,
+            value: users[i].name
+        }
     }
 }

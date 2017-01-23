@@ -41,6 +41,22 @@ Race.prototype.getRace = function(id, callback) {
     });
 }
 
+Race.prototype.updateRace = function(id, data, callback) {
+    var self = this;
+
+    $.ajax({
+        url: '/races/' + id,
+        data: JSON.stringify(data),
+        dataType : 'json',
+        headers : this.headers,
+        type: 'PUT',
+    }).done(function(data) {
+        callback(data);
+    }).fail(function(data) {
+        callback(data); // Empty array
+    });
+}
+
 Race.prototype.deleteRace = function(id, callback) {
     var self = this;
 
