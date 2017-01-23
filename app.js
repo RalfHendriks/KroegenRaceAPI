@@ -66,7 +66,7 @@ var barController = require('./controllers/bar')(pageHelper, barHelper, Race, Us
 var visitorController = require('./controllers/visitor')(pageHelper, Race, User);
 
 // Routes
-var routes = require('./routes/index')(pageHelper);
+var routes = require('./routes/index')(pageHelper, barHelper);
 var settings = require('./routes/settings')(pageHelper);
 var auth = require('./routes/auth')(authController,passport);
 var races = require('./routes/races')(raceController, participantController, barController, visitorController);

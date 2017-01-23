@@ -3,9 +3,17 @@ var Race = new Race();
 var User = new User();
 
 var userList = [];
+var Position = {
+    lat : 0,
+    lng : 0
+};
+
+var NearbyPlaces = [];
 
 
 $(function() {
+
+    getLocation();
 
     User.getUsers(1, getUsersCallback);
     Race.getRaces(1, getRacesCallback);
@@ -22,10 +30,38 @@ $(function() {
 
         var option = '';
         modal.find('select#raceleader').empty();
+        modal.find('select#bars').empty();
         for(var i = 0; i < userList.length; i++) {
             option = '<option value="' + userList[i].key + '">' + userList[i].value + '</option>';
             modal.find('select#raceleader').append(option);
         }
+
+        for(var i = 0; i < NearbyPlaces.length; i++) {
+            option = '<option value="' + NearbyPlaces[i].id + '">' + NearbyPlaces[i].name + '</option>';
+            modal.find('select#bars').append(option);
+        }
+
+    });
+
+    $('#raceAddModal').on('click', '#raceAddConfirm', function() {
+        var form = $('#raceAddForm');
+
+        var bars = form.find('#bars').val();
+        var formattedBars = [];
+        for(var i = 0; i < bars.length; i++) {
+            formattedBars[i] = {
+                "google_id" : bars[i],
+                "visited_participants": []
+            };
+        }
+
+        var formData = {
+            name : form.find('#name').val(),
+            raceleader : form.find('#raceleader').val(),
+            participants: [form.find('#raceleader').val()],
+            bars: formattedBars
+        };
+        Race.addRace(formData, addRaceCallback);
     });
 
     $('#raceEditModal').on('show.bs.modal', function (event) {
@@ -144,9 +180,13 @@ function getRaceCallback(race) {
     }
 }
 
+function addRaceCallback(data) {
+    $('#raceAddModal').modal('hide');
+    Race.getRaces(Race.currentPage, getRacesCallback);
+}
+
 function updateRaceCallback(data) {
     $('#raceEditModal').modal('hide');
-    console.log(data);
     Race.getRaces(Race.currentPage, getRacesCallback);
 }
 
@@ -166,8 +206,6 @@ function updateParticipantsCallback(data) {
 
 function getParticipantsCallback(data) {
     var modal = $('#raceParticipantsModal');
-
-    console.log(data);
 
     var option = '';
     var selected = '';
@@ -241,4 +279,29 @@ function parseUserList(users) {
             value: users[i].name
         }
     }
+}
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(setPosition);
+    }
+}
+function setPosition(pos) {
+    Position.lat = pos.coords.latitude;
+    Position.lng = pos.coords.longitude;
+
+    getNearbyPlaces();
+}
+
+function getNearbyPlaces() {
+
+    $.get('/getnearbyplaces?lat=' + Position.lat + '&lng=' + Position.lng, function(data) {
+
+        for(var i = 0; i < data.length; i++) {
+            NearbyPlaces[i] = {
+                id: data[i].id,
+                name: data[i].name
+            }
+        }
+    });
 }

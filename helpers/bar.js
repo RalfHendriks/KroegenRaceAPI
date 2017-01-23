@@ -48,5 +48,29 @@ module.exports = function() {
         });
     };
 
+    helper.getNearbyPlaces = function(location, callback) {
+        var places = new googlePlaces(config.googleplaces.key);
+
+        // Do async request
+        var query = {};
+        query.location = location.lat + ',' + location.lng;
+        query.radius = 2000;
+        query.type = 'bar|cafe';
+
+        // Get data from Google Places
+        places.nearbySearch(query, function(err, res) {
+            if(err) return res.json(err);
+
+            // Add extra Google Places data to return object
+            if(res.body.status === 'OK') {
+                var result = res.body.results;
+                callback(null, result);
+            } else {
+                callback(null, []);
+            }
+        });
+
+    }
+
     return helper;
 };
