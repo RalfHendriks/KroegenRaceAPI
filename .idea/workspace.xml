@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a405589d-847c-4a56-b636-eee765904bf1" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app.js" afterPath="$PROJECT_DIR$/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/helpers/bar.js" afterPath="$PROJECT_DIR$/helpers/bar.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/scripts/admin.js" afterPath="$PROJECT_DIR$/public/scripts/admin.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/index.js" afterPath="$PROJECT_DIR$/routes/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/modals/race_add_modal.ejs" afterPath="$PROJECT_DIR$/views/modals/race_add_modal.ejs" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/pages/race_detail.ejs" afterPath="$PROJECT_DIR$/views/pages/race_detail.ejs" />
     </list>
     <ignored path="kroegenraceapi.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -59,17 +53,17 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="admin.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="admin.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/scripts/admin.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="495">
-              <caret line="61" column="31" selection-start-line="61" selection-start-column="31" selection-end-line="61" selection-end-column="31" />
+            <state relative-caret-position="480">
+              <caret line="158" column="175" selection-start-line="158" selection-start-column="175" selection-end-line="158" selection-end-column="175" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="race_detail.ejs" pinned="false" current-in-tab="true">
+      <file leaf-file-name="race_detail.ejs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/pages/race_detail.ejs">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="424">
@@ -188,8 +182,8 @@
         <option value="$PROJECT_DIR$/views/modals/race_add_modal.ejs" />
         <option value="$PROJECT_DIR$/public/scripts/admin-race.js" />
         <option value="$PROJECT_DIR$/controllers/race.js" />
-        <option value="$PROJECT_DIR$/public/scripts/admin.js" />
         <option value="$PROJECT_DIR$/views/pages/race_detail.ejs" />
+        <option value="$PROJECT_DIR$/public/scripts/admin.js" />
       </list>
     </option>
   </component>
@@ -432,12 +426,12 @@
       <workItem from="1483628183046" duration="5814000" />
       <workItem from="1483695200306" duration="15220000" />
       <workItem from="1483804482469" duration="1370000" />
-      <workItem from="1485008259173" duration="49852000" />
+      <workItem from="1485008259173" duration="49955000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="155147000" />
+    <option name="totallyTimeSpent" value="155250000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="22" width="1440" height="808" extended-state="6" />
@@ -881,18 +875,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/scripts/admin.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="61" column="31" selection-start-line="61" selection-start-column="31" selection-end-line="61" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/views/pages/race_detail.ejs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="424">
           <caret line="61" column="114" selection-start-line="61" selection-start-column="114" selection-end-line="61" selection-end-column="114" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/scripts/admin.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="158" column="175" selection-start-line="158" selection-start-column="175" selection-end-line="158" selection-end-column="175" />
           <folding />
         </state>
       </provider>

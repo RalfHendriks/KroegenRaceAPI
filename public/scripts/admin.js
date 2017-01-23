@@ -156,7 +156,7 @@ function getRacesCallback(races) {
         barsBtn         = '<a data-toggle="modal" data-target="#raceBarsModal" data-name="' + races[i].name + '" data-id="' + races[i]._id + '" class="btn btn-default btn-xs" href="#" role="button"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span></a>';
         deleteBtn       = '<a data-toggle="modal" data-target="#raceDeleteModal" data-name="' + races[i].name + '" data-id="' + races[i]._id + '" class="btn btn-danger btn-xs" href="#" role="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
 
-        $('#race-data').append('<div class="list-group-item">' + races[i].name + '<div class="btn-group pull-right" role="group" aria-label="...">' + editBtn + participantsBtn + barsBtn + deleteBtn + '</div></div>');
+        $('#race-data').append('<div class="list-group-item">' + races[i].name + '<div class="btn-group pull-right" role="group" aria-label="...">' + editBtn + participantsBtn + deleteBtn + '</div></div>');
     }
 
     for(var i = 1; i <= Race.totalPages; i++) {
