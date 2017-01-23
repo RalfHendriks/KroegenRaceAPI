@@ -56,24 +56,10 @@
             <table class="table table-hover">
                 <tr>
                     <th>Name: </th>
-                    <th>Progress: </th>
                 </tr>
                 <% for(var i=0; i < data.participants.length; i++) { %>
                 <tr>
                     <td><a href="/users/<%= data.participants[i]._id %>"><%= data.participants[i].name %></a></td>
-                    <td>
-                        <% var count = 0; %>
-                        <% for(var j=0; j < data.bars.length; j++) {
-                            if(_.contains(data.bars[j].visited_participants, data.participants[i]._id))
-                                count++;
-                        } %>
-                        <% var percent = (count / data.bars.length * 100); %>
-                        <div class="progress">
-                            <div class="progress-bar <% if(percent === 100) {%>progress-bar-success<% } %>" role="progressbar" aria-valuenow="<%= percent %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= percent %>%;">
-                                <%= count %>/<%= data.bars.length %>
-                            </div>
-                        </div>
-                    </td>
                 </tr>
                 <% } %>
             </table>
