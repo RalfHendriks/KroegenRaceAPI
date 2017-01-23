@@ -10,18 +10,19 @@ function Init(){
             failureRedirect : '/auth/login', // redirect back to the signup page if there is an error
             failureFlash : true // allow flash messages        
         }));
-        /*.post(function(req, res, next) {
-            pass.authenticate('local-login', function(err, user) {
-                if (err) { return next(err); }
+        
+    router.route('/json_login')
+        .post(pass.authenticate('local-login', {
+            successRedirect : '/auth/succes', // redirect to the secure profile section
+            failureRedirect : '/auth/failure', // redirect back to the signup page if there is an error
+            failureFlash : true // allow flash messages        
+        }));
 
-                if (!user) {
-                    auth.proccessInvalidLogin(req, res);
-                } else {
-                    req.user = user;
-                    auth.proccessValidLogin(req, res);
-                }
-            })(req, res, next);
-        });*/
+    router.route('/succes')
+        .get(auth.proccessValidLogin);
+
+    router.route('/failure')
+        .get(auth.proccessInvalidLogin);
 
     router.route('/logout')
         .get(auth.logout);
