@@ -80,8 +80,31 @@ module.exports = function(pageHelper, User) {
         });
     };
 
-    controller.editUser = function() {
-        res.json({"error" : "Not implemented yey"});
+    /**
+     * Edit User
+     * @param req
+     * @param res
+     */
+    controller.editUser = function(req, res) {
+        var query = {};
+
+        if (req.params.id) {
+            query._id = req.params.id;
+        }
+
+        User.findOne(query, function (err, user){
+            if(err) return res.json(err);
+
+            if (!user)
+                return res.status(404).json({error: 'user not found'});
+
+            User.update(query, req.body, function(err, user) {
+                if(err) return res.json(err);
+
+                res.json(user);
+            });
+
+        });
     };
 
     return controller;

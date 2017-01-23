@@ -117,5 +117,35 @@ module.exports = function(pageHelper, Race, User) {
         });
     };
 
+    /**
+     * Edit Participants
+     * @param req
+     * @param res
+     */
+    controller.editParticipants = function(req, res) {
+        var query = {};
+
+        if (req.params.id) {
+            query._id = req.params.id;
+        }
+
+        Race.findOne(query, function (err, race){
+            if(err) return res.json(err);
+
+            if (!race)
+                return res.status(404).json({error: 'race not found'});
+
+            race = race.toObject();
+            race.participants = req.body;
+
+            Race.update(query, race, function(err, race) {
+                if(err) return res.json(err);
+
+                res.json(race);
+            });
+
+        });
+    };
+
     return controller;
 };

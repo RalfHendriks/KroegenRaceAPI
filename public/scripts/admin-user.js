@@ -25,3 +25,34 @@ User.prototype.getUsers = function(page, callback) {
         callback([]); // Empty array
     });
 };
+
+User.prototype.getUser = function(id, callback) {
+    var self = this;
+
+    $.ajax({
+        url: '/users/' + id,
+        dataType : 'json',
+        headers : this.headers,
+        type: 'GET'
+    }).done(function(data) {
+        callback(data.data);
+    }).fail(function() {
+        callback([]); // Empty array
+    });
+};
+
+User.prototype.updateUser = function(id, data, callback) {
+    var self = this;
+
+    $.ajax({
+        url: '/users/' + id,
+        data: JSON.stringify(data),
+        dataType : 'json',
+        headers : this.headers,
+        type: 'PUT',
+    }).done(function(data) {
+        callback(data);
+    }).fail(function(data) {
+        callback(data); // Empty array
+    });
+};
