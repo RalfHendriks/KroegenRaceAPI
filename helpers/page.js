@@ -1,7 +1,7 @@
 var helper = {};
 var _ = require('underscore');
 
-module.exports = function(authController) {
+module.exports = function() {
 
     /**
      * Get header type
@@ -31,7 +31,6 @@ module.exports = function(authController) {
         // Check if totalItems parameter isset
         if (typeof pages === 'undefined')
             pages = 0;
-
         if(this.getHeaderType(req) === 'application/json') {
             var returnJson = {
                 currentPage: (req.query.page > 0 ? parseFloat(req.query.page) : 1),
@@ -40,14 +39,16 @@ module.exports = function(authController) {
             };
             res.json(returnJson);
         } else {
+            var user = req.user === undefined ? 'visitor' : req.user.role;
             var htmlData = {
-                userPermission: authController.getUserRole(req, res),
+                userPermission: user,
                 data: data,
                 currentPage: (req.query.page > 0 ? parseFloat(req.query.page) : 1),
                 pages: pages,
                 req: req,
                 _: _ // Include underscore to view
             }
+            console.log(user);
             res.render(page, htmlData);
         }
     };

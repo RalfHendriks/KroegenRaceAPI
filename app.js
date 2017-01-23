@@ -6,62 +6,27 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var bcrypt   = require('bcrypt-nodejs');
 
-var express = require('express');
 var passport = require('passport');
 var flash    = require('connect-flash');
 var session  = require('express-session');
 var config = require('./config')();
-var ConnectRoles = require('connect-roles');
 var mongoose = require('mongoose');
 var socket_io = require('socket.io');
-var auth = require('./controllers/auth');
-
+var authorization = require('./utils/authorization');
 // Mongoose
 mongoose.connect(config.mlab.host);
-
-var user = new ConnectRoles({
-  failureHandler: function (req, res, action) {
-    var accept = req.headers.accept || '';
-    res.status(403);
-    if (~accept.indexOf('html')) {
-      res.render('access-denied', {action: action});
-    } else {
-      res.send('Access Denied - You don\'t have permission to: ' + action);
-    }
-  }
-});
 
 // Models
 var User = require('./models/user')(mongoose,bcrypt);
 var Race = require('./models/race')(mongoose);
-
-// Auth
-var authController = new auth(User);
-
-// Helpers
-var pageHelper = require('./helpers/page')(authController);
-var barHelper = require('./helpers/bar')();
-
-// Controllers
-var userController = require('./controllers/user')(pageHelper, User);
-var raceController = require('./controllers/race')(pageHelper, barHelper, Race, User);
-var participantController = require('./controllers/participant')(pageHelper, Race, User);
-var barController = require('./controllers/bar')(pageHelper, barHelper, Race, User);
-var visitorController = require('./controllers/visitor')(pageHelper, Race, User);
-
-// Routes
-var routes = require('./routes/index')(authController);
-var auth = require('./routes/auth')(authController,passport);
-var races = require('./routes/races')(raceController, participantController, barController, visitorController);
-var users = require('./routes/users')(userController);
-
-require('./config/passport')(passport,User);
 
 var app = express();
 
 // Socket.io
 var io = socket_io();
 app.io = io;
+
+require('./config/passport')(passport,User);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views/pages'));
@@ -81,16 +46,37 @@ app.use(function (req, res, next) {
       next();
 });
 
-app.use(session({ secret: 'idreamofaworldwherenothingislimited' })); // session secret
+app.use(session({ secret: 'idreamofaworldwherenanythingispossible' })); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
-app.use(user.middleware());
+app.use(authorization.roles.middleware());
 app.use(flash());
+
+
+
+// Helpers
+var pageHelper = require('./helpers/page')();
+var barHelper = require('./helpers/bar')();
+// Controllers
+var authController = require('./controllers/auth')(pageHelper);
+var userController = require('./controllers/user')(pageHelper, User);
+var raceController = require('./controllers/race')(pageHelper, barHelper, Race, User);
+var participantController = require('./controllers/participant')(pageHelper, Race, User);
+var barController = require('./controllers/bar')(pageHelper, barHelper, Race, User);
+var visitorController = require('./controllers/visitor')(pageHelper, Race, User);
+
+// Routes
+var routes = require('./routes/index')(pageHelper);
+var settings = require('./routes/settings')(pageHelper);
+var auth = require('./routes/auth')(authController,passport);
+var races = require('./routes/races')(raceController, participantController, barController, visitorController);
+var users = require('./routes/users')(userController);
 
 app.use('/', routes);
 app.use('/auth',auth);
-app.use('/races', races);
-app.use('/users', users);
+app.use('/races',authorization.checkAuth, races);
+app.use('/admin',authorization.checkAuth,authorization.roles.is('admin'),settings);
+app.use('/users',authorization.checkAuth,authorization.roles.is('admin'), users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

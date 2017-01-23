@@ -1,39 +1,42 @@
-var User;
-var Self;
+var controller = {};
 
-module.exports = function(user){
-  //init controller properties
-  User = user;
-  Self = this;
+module.exports = function(pageHelper){
   
-  this.login = function(req,res,next){
-     res.render('login', { message: req.flash('loginMessage'), userPermission: Self.getUserRole(req)});
+  controller.login = function(req,res,next){
+     pageHelper.renderPage(req,res,'login',[]);
+     //res.render('login', , userPermission: 'user'});
   };
 
-  this.signup = function(req,res,next){
-    res.render('signup', { message: req.flash('signupMessage'), userPermission: Self.getUserRole(req) });
+  controller.signup = function(req,res,next){
+    res.render('signup', { message: req.flash('signupMessage'), userPermission: 'user' });
   }; 
 
-  this.logout = function(req,res,next) {
+  controller.logout = function(req,res,next) {
+
     req.session.destroy();
     res.redirect('/'); 
   };
 
-  this.proccessValidLogin = function(req ,res){
+  controller.GetRole = function(req,res,next){
+    return req.user.role;
+  }
+
+  controller.proccessValidLogin = function(req ,res){
     if(req.get('Content-Type') == 'application/json')
         Self.renderUserObject(req,res);
-    else
-        res.render('home', {userPermission: Self.getUserRole(req)});
+    else{
+        res.render('home', {userPermission: 'user'});
+    }
   };
 
-  this.proccessInvalidLogin = function(req, res){
+  controller.proccessInvalidLogin = function(req, res){
         if(req.get('Content-Type') == 'application/json')
             res.json('Invalid password');
         else
             res.redirect('/auth/login');
   };
 
-  this.getUserObject = function(req,res,next){
+  /*this.getUserObject = function(req,res,next){
     var userResponse = req.user.toObject();
     delete userResponse["google"];
     delete userResponse["facebook"];
@@ -48,9 +51,9 @@ module.exports = function(user){
         delete userResponse["facebook"];
         delete userResponse.local.password;
         res.json(userResponse);
-  }; 
+  }; */
 
-  this.getUserRole = function(req,res,next){
+  /*this.getUserRole = function(req,res,next){
     if(req.user == undefined)
       return 'visitor';
     else
@@ -85,10 +88,11 @@ module.exports = function(user){
       console.log(error);
     }
 
-  };
+  };*/
 
   /*this.hasAcces = function(req,res,next){
       return 'hello';
   };*/
 
+  return controller;
 };
