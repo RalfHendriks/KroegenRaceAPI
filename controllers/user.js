@@ -38,22 +38,26 @@ module.exports = function(pageHelper, User) {
     };
 
     controller.addUser = function(req, res) {
-
-        /*if(!req.body.name) {
-            res.status(400);
-            return res.json({'error':'name is required'});
-        }
-
-        if(!req.body.role) {
-            res.status(400);
-            return res.json({'error':'role is required'});
-        }*/
-
-        /*newUser.save(function(err,newUser) {
-         res.json(newUser);
-         });*/
-
-        res.json({"error" : "Not implemented yey"});
+        User.findOne({ 'local.email' :  req.body.email }, function(err, user) {
+            if (err)
+                return done(err);
+            if (user) {
+                res.json('That email is already taken.');
+            } else {
+                var newUser            = new User();
+                newUser.name     = req.body.name;
+                newUser.age      = req.body.age; 
+                newUser.local.email    = req.body.email;
+                newUser.local.password = newUser.generateHash(req.body.password);// use the generateHash function in our user model
+                newUser.role = 'user'; 
+				// save the user
+                newUser.save(function(err) {
+                    if (err)
+                        throw err;
+                    res.json(newUser);
+                });
+            }
+        });
     };
 
     /**

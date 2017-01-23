@@ -4,7 +4,6 @@ module.exports = function(pageHelper){
   
   controller.login = function(req,res,next){
      pageHelper.renderPage(req,res,'login',[]);
-     //res.render('login', , userPermission: 'user'});
   };
 
   controller.signup = function(req,res,next){
@@ -12,7 +11,6 @@ module.exports = function(pageHelper){
   }; 
 
   controller.logout = function(req,res,next) {
-
     req.session.destroy();
     res.redirect('/'); 
   };
@@ -22,18 +20,11 @@ module.exports = function(pageHelper){
   }
 
   controller.proccessValidLogin = function(req ,res){
-    if(req.get('Content-Type') == 'application/json')
-        Self.renderUserObject(req,res);
-    else{
-        res.render('home', {userPermission: 'user'});
-    }
+    res.json(req.user);
   };
 
   controller.proccessInvalidLogin = function(req, res){
-        if(req.get('Content-Type') == 'application/json')
-            res.json('Invalid password');
-        else
-            res.redirect('/auth/login');
+    res.json('Invalid password');
   };
 
   /*this.getUserObject = function(req,res,next){
