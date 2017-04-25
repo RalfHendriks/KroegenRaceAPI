@@ -1,19 +1,19 @@
 var config = module.exports = {};
 
 config.googleplaces = {
-    key: 'AIzaSyD3PUPRq9aJRVeCXaIJo2_FDb6mEAxTSWE',
+    key: '',
     baseurl: 'https://maps.googleapis.com/maps/api/place/nearbysearch/'
 };
 
 config.facebookAuth = {
-        'clientID'      : '600322860116047',
-        'clientSecret'  : '080f432b8098bc46565de184bb16f934',
-        'callbackURL'   : 'https://kroegen-race-api.herokuapp.com/auth/facebook/callback'
+        'clientID'      : '',
+        'clientSecret'  : '',
+        'callbackURL'   : ''
     },
 config.googleAuth = {
-		'clientID' 		: '1057465675223-t3s3ub3d0e77o0hh3uq1rv8a9hcucf8d.apps.googleusercontent.com',
-		'clientSecret' 	: 'h5UI6G2kYD82IZwfhgfLhdRH',
-		'callbackURL' 	: 'https://kroegen-race-api.herokuapp.com/auth/google/callback'
+		'clientID' 		: ',
+		'clientSecret' 	: '',
+		'callbackURL' 	: ''
 	}
 
 config.server = {
@@ -22,7 +22,7 @@ config.server = {
 };
 
 config.mlab = {
-  host: 'mongodb://Ralf:Test123@ds023118.mlab.com:23118/kroegenraceapi',
+  host: '',
   port: 6379,
   options: {
 
